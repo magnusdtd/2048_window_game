@@ -127,8 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="render.cpp" />
+    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="win32_platform.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib.h" />
+    <ClInclude Include="renderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

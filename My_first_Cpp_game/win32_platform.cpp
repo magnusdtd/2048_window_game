@@ -1,19 +1,11 @@
-#include <windows.h>
-
-struct RenderState {
-	void* memory;
-	int width, height;
-	BITMAPINFO bitmapInfo;
-
-};
-
+#include "lib.h";
+#include "renderer.h"
 
 /*WARNING: carefull whenever you change this variable*/
 //=======================//
 bool running = true;
 RenderState renderState;
 //=====================//
-
 
 /*
 Description: This callback function is the way window use to pass messages down to us. Whenever sonething happens to window like receives user input, close window, changing the size or minimize, ... the window will receive a message for this callback function.
@@ -110,7 +102,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		// Simulate
-		renderBackGround();
+		renderBackGround(renderState);
 
 		// Render
 		StretchDIBits(hdc, 0, 0, renderState.width, renderState.height, 0, 0, renderState.width, renderState.height, renderState.memory, &renderState.bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
