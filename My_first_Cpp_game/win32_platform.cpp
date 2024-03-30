@@ -37,8 +37,8 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			RECT rect;
 			GetClientRect(hwnd, &rect);
-			bufferHeight = rect.bottom - rect.top;
 			bufferWidth = rect.right - rect.left;
+			bufferHeight = rect.bottom - rect.top;
 
 			int bufferSize = bufferHeight * bufferWidth * sizeof(unsigned int);
 			// Dynamically allocate memory for bufferMemory
@@ -47,20 +47,12 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			bufferMemory = VirtualAlloc(0, bufferSize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
 			bufferBitmapInfo.bmiHeader.biSize = sizeof(bufferBitmapInfo.bmiHeader);
-			bufferBitmapInfo.
-			typedef struct tagBITMAPINFOHEADER {
-				DWORD biSize;
-				LONG  biWidth;
-				LONG  biHeight;
-				WORD  biPlanes;
-				WORD  biBitCount;
-				DWORD biCompression;
-				DWORD biSizeImage;
-				LONG  biXPelsPerMeter;
-				LONG  biYPelsPerMeter;
-				DWORD biClrUsed;
-				DWORD biClrImportant;
-			} BITMAPINFOHEADER, * LPBITMAPINFOHEADER, * PBITMAPINFOHEADER;
+			bufferBitmapInfo.bmiHeader.biWidth = bufferWidth;
+			bufferBitmapInfo.bmiHeader.biHeight = bufferHeight;
+			bufferBitmapInfo.bmiHeader.biPlanes = 1;
+			bufferBitmapInfo.bmiHeader.biBitCount = 32;
+			bufferBitmapInfo.bmiHeader.biCompression = BI_RGB;
+
 		} break;
 
 		default: 
@@ -116,6 +108,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 
 		// Render
-		StretchDIBits(hdc, 0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, bufferMemory);
+		StretchDIBits(hdc, 0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, bufferMemory, &bufferBitmapInfo, DIB_RGB_COLORS, SRCCOPY);
 	}
 }
