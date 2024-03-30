@@ -142,6 +142,7 @@
     <ClCompile Include="win32_platform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="platformCommon.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="RenderState.h" />
     <ClInclude Include="utils.h" />

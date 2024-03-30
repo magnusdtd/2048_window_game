@@ -3,6 +3,7 @@
 #include <windows.h>
 #include "RenderState.h"
 #include "renderer.h"
+#include "platformCommon.h"
 
 
 /*WARNING: carefull whenever you change this variable*/
@@ -94,21 +95,50 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	HWND window = CreateWindow(windowClass.lpszClassName, L"First game!", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
 	HDC hdc = GetDC(window);
 
+	Input input = {};
+
 
 	// Main loop of the game
 	while (running)
 	{
 		// Input (Keyboard, mouse, ..)
 		MSG message;
+
+		for (int i = 0; i < BUTTON_COUNT; i++) {
+			input.buttons[i].changed = false;
+		}
+
 		while (PeekMessage(&message, window, 0, 0, PM_REMOVE))
 		{
-			TranslateMessage(&message);
-			DispatchMessage(&message);
+			switch (message.message) 
+			{
+				case WM_KEYUP:
+				case WM_KEYDOWN: 
+				{
+					u32 vkCode = (u32)message.wParam;
+					bool isDown = ((message.lParam & (1 << 31)) == 0);
+
+					switch (vkCode)
+					{
+						case VK_UP:
+						{
+							input.buttons[BUTTON_UP].isDown = isDown;
+							input.buttons[BUTTON_UP].changed = true;
+						}
+					}
+				}
+				default: 
+				{
+					TranslateMessage(&message);
+					DispatchMessage(&message);
+				}
+			}
+			
 		}
 
 		// Simulate
 		clearScreen(0xff5500);
-		drawRect(30.0, 30, .05, .05, 0x00ff22);
+		drawRect(.01, .5, .5, .5, 0x00ff22);
 		drawRect(.15, .5, .2, .2, 0xff0000);
 
 		// Render
