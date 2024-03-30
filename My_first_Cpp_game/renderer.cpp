@@ -38,7 +38,7 @@ void drawRectinPixels(int x0, int y0, int x1, int y1, u32 color)
 
 void drawRect(double x, double y, double halfSizeX, double halfSizeY, u32 color)
 {
-	double renderScale = 0.01f;
+	double renderScale = .5f;
 	x *= renderState.height * renderScale;
 	y *= renderState.height * renderScale;
 	halfSizeX = renderState.height * renderScale;
@@ -50,10 +50,10 @@ void drawRect(double x, double y, double halfSizeX, double halfSizeY, u32 color)
 	
 	
 	//Change to pixels
-	int x0 = x - halfSizeX;
-	int x1 = x + halfSizeX;
-	int y0 = y - halfSizeY;
-	int y1 = y + halfSizeY;
+	int x0 = (int) x - halfSizeX;
+	int x1 = (int) x + halfSizeX;
+	int y0 = (int) y - halfSizeY;
+	int y1 = (int) y + halfSizeY;
 
 	drawRectinPixels(x0, y0, x1, y1, color);
 }
