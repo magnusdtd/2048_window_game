@@ -1,11 +1,15 @@
-#include "lib.h";
+#include "utils.h"
+#include "variables.h"
+#include <windows.h>
+#include "RenderState.h"
 #include "renderer.h"
+
 
 /*WARNING: carefull whenever you change this variable*/
 //=======================//
 bool running = true;
-RenderState renderState;
 //=====================//
+	
 
 /*
 Description: This callback function is the way window use to pass messages down to us. Whenever sonething happens to window like receives user input, close window, changing the size or minimize, ... the window will receive a message for this callback function.
@@ -75,7 +79,8 @@ Return value:
 	If the function succeeds, terminating when it receives a WM_QUIT message, it should return the exit value contained in that message's wParam parameter. If the function terminates before entering the message loop, it should return zero.
 */
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
-{
+{	
+	
 	// Create window class
 	WNDCLASS windowClass = {};
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -102,7 +107,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		// Simulate
-		renderBackGround(renderState);
+		clearScreen(0xff5500);
+		drawRect(30.0, 30, .05, .05, 0x00ff22);
+		drawRect(.15, .5, .2, .2, 0xff0000);
 
 		// Render
 		StretchDIBits(hdc, 0, 0, renderState.width, renderState.height, 0, 0, renderState.width, renderState.height, renderState.memory, &renderState.bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
