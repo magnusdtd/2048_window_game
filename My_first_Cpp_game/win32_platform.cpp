@@ -1,17 +1,22 @@
 #include <windows.h>
 
+struct RenderState {
+	void* memory;
+	int width, height;
+	BITMAPINFO bitmapInfo;
+
+};
+
+
 /*WARNING: carefull whenever you change this variable*/
 //=======================//
 bool running = true;
-void* bufferMemory;
-int bufferWidth;
-int bufferHeight;
-BITMAPINFO bufferBitmapInfo;
+RenderState renderState;
 //=====================//
 
+
 /*
-	Description: This callback function is the way window use to pass messages down to us.
-	Whenever sonething happens to window like receives user input, close window, changing the size or minimize, ... the window will receive a message for this callback function.
+Description: This callback function is the way window use to pass messages down to us. Whenever sonething happens to window like receives user input, close window, changing the size or minimize, ... the window will receive a message for this callback function.
 Parameters:
 	1. hwnd - type: HWND
 	It is a handle to the window.
@@ -37,21 +42,21 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			RECT rect;
 			GetClientRect(hwnd, &rect);
-			bufferWidth = rect.right - rect.left;
-			bufferHeight = rect.bottom - rect.top;
+			renderState.width = rect.right - rect.left;
+			renderState.height = rect.bottom - rect.top;
 
-			int bufferSize = bufferHeight * bufferWidth * sizeof(unsigned int);
+			int bufferSize = renderState.height * renderState.width * sizeof(unsigned int);
 			// Dynamically allocate memory for bufferMemory
-			if (bufferMemory)
-				VirtualFree(bufferMemory, 0, MEM_RELEASE);
-			bufferMemory = VirtualAlloc(0, bufferSize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+			if (renderState.memory)
+				VirtualFree(renderState.memory, 0, MEM_RELEASE);
+			renderState.memory = VirtualAlloc(0, bufferSize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
-			bufferBitmapInfo.bmiHeader.biSize = sizeof(bufferBitmapInfo.bmiHeader);
-			bufferBitmapInfo.bmiHeader.biWidth = bufferWidth;
-			bufferBitmapInfo.bmiHeader.biHeight = bufferHeight;
-			bufferBitmapInfo.bmiHeader.biPlanes = 1;
-			bufferBitmapInfo.bmiHeader.biBitCount = 32;
-			bufferBitmapInfo.bmiHeader.biCompression = BI_RGB;
+			renderState.bitmapInfo.bmiHeader.biSize = sizeof(renderState.bitmapInfo.bmiHeader);
+			renderState.bitmapInfo.bmiHeader.biWidth = renderState.width;
+			renderState.bitmapInfo.bmiHeader.biHeight = renderState.height;
+			renderState.bitmapInfo.bmiHeader.biPlanes = 1;
+			renderState.bitmapInfo.bmiHeader.biBitCount = 32;
+			renderState.bitmapInfo.bmiHeader.biCompression = BI_RGB;
 
 		} break;
 
@@ -105,9 +110,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		// Simulate
-
+		renderBackGround();
 
 		// Render
-		StretchDIBits(hdc, 0, 0, bufferWidth, bufferHeight, 0, 0, bufferWidth, bufferHeight, bufferMemory, &bufferBitmapInfo, DIB_RGB_COLORS, SRCCOPY);
+		StretchDIBits(hdc, 0, 0, renderState.width, renderState.height, 0, 0, renderState.width, renderState.height, renderState.memory, &renderState.bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
 	}
 }
