@@ -4,6 +4,7 @@
 #include "RenderState.h"
 #include "renderer.h"
 #include "platformCommon.h"
+#include "game.h"
 
 
 /*WARNING: carefull whenever you change this variable*/
@@ -97,7 +98,6 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 	Input input = {};
 
-
 	// Main loop of the game
 	while (running)
 	{
@@ -137,10 +137,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		// Simulate
-		clearScreen(0xff5500);
-		if (input.buttons[BUTTON_UP].isDown)
-			drawRect(.01, .5, .5, .5, 0x00ff22);
-		drawRect(.15, .5, .2, .2, 0xff0000);
+		stimulateGame(&input);
 
 		// Render
 		StretchDIBits(hdc, 0, 0, renderState.width, renderState.height, 0, 0, renderState.width, renderState.height, renderState.memory, &renderState.bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
