@@ -103,7 +103,20 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	HWND window = CreateWindow(windowClass.lpszClassName, L"2048", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
 	HDC hdc = GetDC(window);
 
+	// Array of input
 	Input input = {};
+
+	// Manipulate frame per second
+	double deltaTime = 0.0166667f; // 60 FPS
+	LARGE_INTEGER frameBeginTime;
+	QueryPerformanceCounter(&frameBeginTime);
+	float performanceFrequency;
+	{
+		LARGE_INTEGER perf;
+		QueryPerformanceFrequency(&perf);
+		performanceFrequency = (double)perf.QuadPart;
+	}
+	
 
 	// Main loop of the game
 	while (running)
@@ -144,9 +157,16 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		}
 
 		// Simulate
-		stimulateGame(&input);
+		stimulateGame(&input, deltaTime);
 
 		// Render
 		StretchDIBits(hdc, 0, 0, renderState.width, renderState.height, 0, 0, renderState.width, renderState.height, renderState.memory, &renderState.bitmapInfo, DIB_RGB_COLORS, SRCCOPY);
+
+		LARGE_INTEGER frameEndTime;
+		QueryPerformanceCounter(&frameEndTime);
+		deltaTime = (double)(frameBeginTime.QuadPart - frameEndTime.QuadPart) / performanceFrequency;
+		frameBeginTime = frameEndTime;
 	}
+
+
 }
