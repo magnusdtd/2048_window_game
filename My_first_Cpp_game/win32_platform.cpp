@@ -10,8 +10,8 @@
 /* MACROS */
 #define processButton(b, vk)\
 case vk : {\
+	input.buttons[b].changed = isDown != input.buttons[b].isDown; \
 	input.buttons[b].isDown = isDown; \
-	input.buttons[b].changed = true; \
 }	break;
 
 /*WARNING: carefull whenever you change this variable*/

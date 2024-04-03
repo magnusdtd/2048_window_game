@@ -11,15 +11,15 @@ void stimulateGame(Input* input, double deltaTime)
 {
 	clearScreen(0xffffff);
 
-	double speed = 50.f;
+	double speed = 5000.f;
 
-	if (isDown(BUTTON_UP))
+	if (isPressed(BUTTON_UP))
 		playerPosX -= speed * deltaTime;
-	if (isDown(BUTTON_DOWN))
+	if (isPressed(BUTTON_DOWN))
 		playerPosX += speed * deltaTime;
-	if (isDown(BUTTON_RIGHT))
+	if (isPressed(BUTTON_RIGHT))
 		playerPosY -= speed * deltaTime;
-	if (isDown(BUTTON_LEFT))
+	if (isPressed(BUTTON_LEFT))
 		playerPosY += speed * deltaTime;
 	
 	drawRect(playerPosY, playerPosX, 1, 1, 0x00ff22);
