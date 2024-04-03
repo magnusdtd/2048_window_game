@@ -1,3 +1,4 @@
+/* LIBRARY */
 #include "utils.h"
 #include "variables.h"
 #include <windows.h>
@@ -6,10 +7,16 @@
 #include "platformCommon.h"
 #include "game.h"
 
+/* MACROS */
+#define processButton(b, vk)\
+case vk : {\
+	input.buttons[b].isDown = isDown; \
+	input.buttons[b].changed = true; \
+}	break;
 
 /*WARNING: carefull whenever you change this variable*/
 //=======================//
-bool running = true;
+bool running = true;	//
 //=====================//
 	
 
@@ -93,7 +100,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	RegisterClass(&windowClass);
 
 	// Create Window
-	HWND window = CreateWindow(windowClass.lpszClassName, L"First game!", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
+	HWND window = CreateWindow(windowClass.lpszClassName, L"2048", WS_OVERLAPPEDWINDOW | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, 1280, 720, 0, 0, hInstance, 0);
 	HDC hdc = GetDC(window);
 
 	Input input = {};
@@ -104,6 +111,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 		// Input (Keyboard, mouse, ..)
 		MSG message;
 
+		// When start a new frame, restart these buttons.
 		for (int i = 0; i < BUTTON_COUNT; i++) {
 			input.buttons[i].changed = false;
 		}
@@ -120,11 +128,10 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 
 					switch (vkCode)
 					{
-						case VK_UP:
-						{
-							input.buttons[BUTTON_UP].isDown = isDown;
-							input.buttons[BUTTON_UP].changed = true;
-						}
+						processButton(BUTTON_UP, VK_UP);
+						processButton(BUTTON_DOWN, VK_DOWN);
+						processButton(BUTTON_LEFT, VK_LEFT);
+						processButton(BUTTON_RIGHT, VK_RIGHT);
 					}
 				}
 				default: 

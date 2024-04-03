@@ -19,7 +19,6 @@ void clearScreen(u32 color)
 			*pixel++ = color;
 }
 
-
 void drawRectinPixels(int x0, int y0, int x1, int y1, u32 color)
 {
 	x0 = clamp(0, x0, renderState.width);
@@ -34,11 +33,9 @@ void drawRectinPixels(int x0, int y0, int x1, int y1, u32 color)
 	}
 }
 
-
-
 void drawRect(double x, double y, double halfSizeX, double halfSizeY, u32 color)
 {
-	double renderScale = .5f;
+	double renderScale = 0.01f;
 	x *= renderState.height * renderScale;
 	y *= renderState.height * renderScale;
 	halfSizeX = renderState.height * renderScale;
