@@ -38,10 +38,10 @@ void drawRect(float x, float y, float halfSizeX, float halfSizeY, u32 color)
 	float renderScale = 0.01f;
 	x *= renderState.height * renderScale;
 	y *= renderState.height * renderScale;
-	halfSizeX = renderState.height * renderScale;
-	halfSizeY = renderState.height * renderScale;
+	halfSizeX *= renderState.height * renderScale;
+	halfSizeY *= renderState.height * renderScale;
 
-
+	// Set x, y to O(0, 0)
 	x += renderState.width / 2.f;
 	y += renderState.height / 2.f;
 	
@@ -59,9 +59,9 @@ void drawNumber(int number, float x, float y, float size, u32 color)
 {
 	float halfSize = size * .5f;
 
-	bool drew_number = false;
-	while (number || !drew_number) {
-		drew_number = true;
+	bool drewNumber = false;
+	while (number || !drewNumber) {
+		drewNumber = true;
 
 		int digit = number % 10;
 		number = number / 10;

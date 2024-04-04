@@ -23,6 +23,6 @@ void stimulateGame(Input* input, float deltaTime)
 		playerPosY += speed * deltaTime;
 	
 	drawRect(playerPosY, playerPosX, 1, 1, 0x00ff22);
-	drawNumber(15, -10, 40, 1.f, 0x000000);
+	drawNumber(115, -10, 40, 5.f, 0xbbffbb);
 	//drawRect(-20, 20, 8, 3, 0xff2222);
 }
