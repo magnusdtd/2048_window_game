@@ -18,6 +18,8 @@ GameMode currentGameMode = GM_MENU;
 void stimulateGame(Input* input, float deltaTime)
 {
 	clearScreen(0xffffff);
+	ShowCursor(true);
+
 
 	float speed = 5000.f;
 
@@ -43,18 +45,18 @@ void stimulateGame(Input* input, float deltaTime)
 		if (isPressed(BUTTON_ENTER))
 		{
 			currentGameMode = GM_GAMEPLAY;
-
+			// 
 		}
 
 		if (selectButton == 0) 
 		{
-			drawRect(20, 0, 10, 10, 0xff0000);
-			drawRect(-20, 0, 10, 10, 0xaaaaaa);
+			drawText("SINGLE PLAYER", -80, -10, 1, 0xff0000);
+			drawText("MULTIPLAYER", 20, -10, 1, 0xaaaaaa);
 		}
 		else
 		{
-			drawRect(20, 0, 10, 10, 0xaaaaaa);
-			drawRect(-20, 0, 10, 10, 0xff0000);
+			drawText("SINGLE PLAYER", -80, -10, 1, 0xaaaaaa);
+			drawText("MULTIPLAYER", 20, -10, 1, 0xff0000);
 		}
 	}
 }
