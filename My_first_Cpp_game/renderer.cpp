@@ -33,9 +33,9 @@ void drawRectinPixels(int x0, int y0, int x1, int y1, u32 color)
 	}
 }
 
-void drawRect(double x, double y, double halfSizeX, double halfSizeY, u32 color)
+void drawRect(float x, float y, float halfSizeX, float halfSizeY, u32 color)
 {
-	double renderScale = 0.01f;
+	float renderScale = 0.01f;
 	x *= renderState.height * renderScale;
 	y *= renderState.height * renderScale;
 	halfSizeX = renderState.height * renderScale;
@@ -55,7 +55,7 @@ void drawRect(double x, double y, double halfSizeX, double halfSizeY, u32 color)
 	drawRectinPixels(x0, y0, x1, y1, color);
 }
 
-void drawNumber(int number, double x, double y, double size, u32 color)
+void drawNumber(int number, float x, float y, float size, u32 color)
 {
 	float halfSize = size * .5f;
 

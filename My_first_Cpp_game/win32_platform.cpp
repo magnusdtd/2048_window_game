@@ -110,7 +110,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	double deltaTime = 0.0166667f; // 60 FPS
 	LARGE_INTEGER frameBeginTime;
 	QueryPerformanceCounter(&frameBeginTime);
-	float performanceFrequency;
+	double performanceFrequency;
 	{
 		LARGE_INTEGER perf;
 		QueryPerformanceFrequency(&perf);

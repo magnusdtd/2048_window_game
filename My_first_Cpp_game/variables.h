@@ -9,6 +9,7 @@
 extern bool running;
 extern RenderState renderState;
 extern Input input;
+extern float renderScale;
 
 #endif
 //=====================//
