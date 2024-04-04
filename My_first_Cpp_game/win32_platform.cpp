@@ -145,6 +145,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 						processButton(BUTTON_DOWN, VK_DOWN);
 						processButton(BUTTON_LEFT, VK_LEFT);
 						processButton(BUTTON_RIGHT, VK_RIGHT);
+						processButton(BUTTON_ENTER, VK_RETURN);
 					}
 				}
 				default: 
