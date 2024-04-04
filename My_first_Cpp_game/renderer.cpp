@@ -2,6 +2,7 @@
 #include "variables.h"
 
 RenderState renderState;
+float renderScale;
 
 void renderBackGround()
 {
@@ -405,10 +406,10 @@ void drawText(const char* text, float x, float y, float size, u32 color) {
 
 			for (int i = 0; i < 7; i++) {
 				const char* row = letter[i];
-				while (*row) {
-					if (*row == '0') {
+				while (*row) 
+				{
+					if (*row == '0')
 						drawRect(x, y, halfSize, halfSize, color);
-					}
 					x += size;
 					row++;
 				}
@@ -420,4 +421,19 @@ void drawText(const char* text, float x, float y, float size, u32 color) {
 		x += size * 6.f;
 		y = original_y;
 	}
+}
+
+void drawArenaBorders(float arenaX, float arenaY, u32 color) {
+	arenaX *= renderState.height * renderScale;
+	arenaY *= renderState.height * renderScale;
+
+	int x0 = (int)((float)renderState.width * .5f - arenaX);
+	int x1 = (int)((float)renderState.width * .5f + arenaX);
+	int y0 = (int)((float)renderState.height * .5f - arenaY);
+	int y1 = (int)((float)renderState.height * .5f + arenaY);
+
+	drawRectinPixels(0, 0, renderState.width, y0, color);
+	drawRectinPixels(0, y1, x1, renderState.height, color);
+	drawRectinPixels(0, y0, x0, y1, color);
+	drawRectinPixels(x1, y0, renderState.width, renderState.height, color);
 }
