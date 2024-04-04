@@ -54,3 +54,98 @@ void drawRect(double x, double y, double halfSizeX, double halfSizeY, u32 color)
 
 	drawRectinPixels(x0, y0, x1, y1, color);
 }
+
+void drawNumber(int number, double x, double y, double size, u32 color)
+{
+	float halfSize = size * .5f;
+
+	bool drew_number = false;
+	while (number || !drew_number) {
+		drew_number = true;
+
+		int digit = number % 10;
+		number = number / 10;
+
+		switch (digit) {
+		case 0: {
+			drawRect(x - size, y, halfSize, 2.5f * size, color);
+			drawRect(x + size, y, halfSize, 2.5f * size, color);
+			drawRect(x, y + size * 2.f, halfSize, halfSize, color);
+			drawRect(x, y - size * 2.f, halfSize, halfSize, color);
+			x -= size * 4.f;
+		} break;
+
+		case 1: {
+			drawRect(x + size, y, halfSize, 2.5f * size, color);
+			x -= size * 2.f;
+		} break;
+
+		case 2: {
+			drawRect(x, y + size * 2.f, 1.5f * size, halfSize, color);
+			drawRect(x, y, 1.5f * size, halfSize, color);
+			drawRect(x, y - size * 2.f, 1.5f * size, halfSize, color);
+			drawRect(x + size, y + size, halfSize, halfSize, color);
+			drawRect(x - size, y - size, halfSize, halfSize, color);
+			x -= size * 4.f;
+		} break;
+
+		case 3: {
+			drawRect(x - halfSize, y + size * 2.f, size, halfSize, color);
+			drawRect(x - halfSize, y, size, halfSize, color);
+			drawRect(x - halfSize, y - size * 2.f, size, halfSize, color);
+			drawRect(x + size, y, halfSize, 2.5f * size, color);
+			x -= size * 4.f;
+		} break;
+
+		case 4: {
+			drawRect(x + size, y, halfSize, 2.5f * size, color);
+			drawRect(x - size, y + size, halfSize, 1.5f * size, color);
+			drawRect(x, y, halfSize, halfSize, color);
+			x -= size * 4.f;
+		} break;
+
+		case 5: {
+			drawRect(x, y + size * 2.f, 1.5f * size, halfSize, color);
+			drawRect(x, y, 1.5f * size, halfSize, color);
+			drawRect(x, y - size * 2.f, 1.5f * size, halfSize, color);
+			drawRect(x - size, y + size, halfSize, halfSize, color);
+			drawRect(x + size, y - size, halfSize, halfSize, color);
+			x -= size * 4.f;
+		} break;
+
+		case 6: {
+			drawRect(x + halfSize, y + size * 2.f, size, halfSize, color);
+			drawRect(x + halfSize, y, size, halfSize, color);
+			drawRect(x + halfSize, y - size * 2.f, size, halfSize, color);
+			drawRect(x - size, y, halfSize, 2.5f * size, color);
+			drawRect(x + size, y - size, halfSize, halfSize, color);
+			x -= size * 4.f;
+		} break;
+
+		case 7: {
+			drawRect(x + size, y, halfSize, 2.5f * size, color);
+			drawRect(x - halfSize, y + size * 2.f, size, halfSize, color);
+			x -= size * 4.f;
+		} break;
+
+		case 8: {
+			drawRect(x - size, y, halfSize, 2.5f * size, color);
+			drawRect(x + size, y, halfSize, 2.5f * size, color);
+			drawRect(x, y + size * 2.f, halfSize, halfSize, color);
+			drawRect(x, y - size * 2.f, halfSize, halfSize, color);
+			drawRect(x, y, halfSize, halfSize, color);
+			x -= size * 4.f;
+		} break;
+
+		case 9: {
+			drawRect(x - halfSize, y + size * 2.f, size, halfSize, color);
+			drawRect(x - halfSize, y, size, halfSize, color);
+			drawRect(x - halfSize, y - size * 2.f, size, halfSize, color);
+			drawRect(x + size, y, halfSize, 2.5f * size, color);
+			drawRect(x - size, y + size, halfSize, halfSize, color);
+			x -= size * 4.f;
+		} break;
+		}
+
+	}
+}
