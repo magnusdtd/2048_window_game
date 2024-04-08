@@ -8,4 +8,5 @@
 #define isReleased(b) (!input->buttons[b].isDown && input->buttons[b].changed)
 
 /* FUNCTION */
+void __init__();
 void stimulateGame(Input* input, float deltaTime);

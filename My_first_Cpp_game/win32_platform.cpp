@@ -17,7 +17,7 @@ case vk : {\
 
 /*WARNING: carefull whenever you change this variable*/
 //=======================//
-bool running = true;	//
+bool running = true;
 //=====================//
 	
 
@@ -41,8 +41,9 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		case WM_CLOSE:
 		case WM_DESTROY: 
 		{	
-
+			VirtualFree(renderState.memory, 0, MEM_RELEASE);
 			running = false;
+			renderState.memory = nullptr;
 		} break;
 
 		case WM_SIZE: 
@@ -120,6 +121,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		performanceFrequency = (double)perf.QuadPart;
 	}
 	
+	// initialize Game class
+	__init__();
 
 	// Main loop of the game
 	while (running)

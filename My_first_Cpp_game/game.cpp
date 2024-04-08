@@ -7,6 +7,7 @@ float playerPosX = 0.f;
 float playerPosY = 0.f;
 bool selectButton;
 float arenaHalfSizeX = 85, arenaHalfSizeY = 45;
+int a[MODE_4][MODE_4];
 
 enum GameMode {
 	GM_MENU,
@@ -26,10 +27,6 @@ private:
 	{
 		return score;
 	}
-	void printTable()
-	{
-
-	}
 	void saveScore()
 	{
 
@@ -37,7 +34,12 @@ private:
 
 };
 
-
+void __init__()
+{
+	for (int i = 0; i < MODE_4; i++)
+		for (int j = 0; j < MODE_4; j++)
+			a[i][j] = random(1, 100);
+}
 
 /* FUNCTION */
 void stimulateGame(Input* input, float deltaTime)
@@ -45,11 +47,6 @@ void stimulateGame(Input* input, float deltaTime)
 	drawArenaBorders(arenaHalfSizeX, arenaHalfSizeY, 0xffffff);
 	ShowCursor(true);
 
-	int a[MODE_4][MODE_4];
-	for (int i = 0; i < MODE_4; i++)
-		for (int j = 0; j < MODE_4; j++)
-			a[i][j] = random(1, 100);
-	
 
 
 	float speed = 50.f;
