@@ -42,10 +42,14 @@ private:
 /* FUNCTION */
 void stimulateGame(Input* input, float deltaTime)
 {
-	/*clearScreen(0xffffff);*/
 	drawArenaBorders(arenaHalfSizeX, arenaHalfSizeY, 0xffffff);
-	//drawRect(0, 0, arenaHalfSizeX, arenaHalfSizeY, 0x30A7CA);
 	ShowCursor(true);
+
+	int a[MODE_4][MODE_4];
+	for (int i = 0; i < MODE_4; i++)
+		for (int j = 0; j < MODE_4; j++)
+			a[i][j] = random(1, 100);
+	
 
 
 	float speed = 50.f;
@@ -61,10 +65,13 @@ void stimulateGame(Input* input, float deltaTime)
 		if (isDown(BUTTON_LEFT))
 			playerPosY += speed * deltaTime;
 
-
-		drawTable(0x1277C4, MODE_4, 10, 2);
+		/*Half size should be 8 if MODE_5 is selected.
+		Half size should be 10 if MODE_4 is selected.*/
+		drawTable(MODE_4, 10, 2, 0xB34670, 0x6683D5, a, 0xffffff);
 
 		drawRect(playerPosY, playerPosX, 1, 1, 0x00ff22);
+
+
 	} 
 	else
 	{

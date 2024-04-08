@@ -41,6 +41,7 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		case WM_CLOSE:
 		case WM_DESTROY: 
 		{	
+
 			running = false;
 		} break;
 
