@@ -8,6 +8,7 @@
 #include "game.h"
 
 /* MACROS */
+#define MAKEINTRESOURCEW(i) ((LPWSTR)((ULONG_PTR)((WORD)(i))))
 #define processButton(b, vk)\
 case vk : {\
 	input.buttons[b].changed = isDown != input.buttons[b].isDown; \
@@ -87,7 +88,7 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 Return value:
 	If the function succeeds, terminating when it receives a WM_QUIT message, it should return the exit value contained in that message's wParam parameter. If the function terminates before entering the message loop, it should return zero.
 */
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {	
 	
 	// Create window class
@@ -95,6 +96,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpszClassName = L"Game Window Class";
 	windowClass.lpfnWndProc = windowCallBack;
+	windowClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE("IDI_ICON1"));
 
 	// Register class
 	RegisterClass(&windowClass);
@@ -138,7 +140,7 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 				{
 					u32 vkCode = (u32)message.wParam;
 					bool isDown = ((message.lParam & (1 << 31)) == 0);
-
+				
 					switch (vkCode)
 					{
 						processButton(BUTTON_UP, VK_UP);

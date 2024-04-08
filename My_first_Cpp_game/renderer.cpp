@@ -56,6 +56,36 @@ void drawRect(float x, float y, float halfSizeX, float halfSizeY, u32 color)
 	drawRectinPixels(x0, y0, x1, y1, color);
 }
 
+void drawTable(u32 color, int mode, float half_size_of_each_cell, float distance_of_each_cell)
+{
+	float x0, y0;
+	if (mode % 2 == 1)
+		x0 = -(half_size_of_each_cell * (mode - 1) + distance_of_each_cell * (mode - 3)), y0 = half_size_of_each_cell * (mode - 1) + distance_of_each_cell * (mode - 3);
+	else
+		x0 = -(half_size_of_each_cell * (mode - 1) + 0.5f * (mode - 2) * distance_of_each_cell + 1), y0 = (half_size_of_each_cell * (mode - 1) + 0.5f * (mode - 2) * distance_of_each_cell + 1);
+
+	for (int i = 0; i < mode; i++) 
+		for (int j = 0; j < mode; j++)
+			drawRect(x0 + j * half_size_of_each_cell * 2.f + distance_of_each_cell * j, y0 - i * half_size_of_each_cell * 2.f - distance_of_each_cell * i, half_size_of_each_cell, half_size_of_each_cell, color);
+
+
+}
+
+void drawArenaBorders(float arenaX, float arenaY, u32 color) {
+	arenaX *= renderState.height * renderScale;
+	arenaY *= renderState.height * renderScale;
+
+	int x0 = (int)((float)renderState.width * .5f - arenaX);
+	int x1 = (int)((float)renderState.width * .5f + arenaX);
+	int y0 = (int)((float)renderState.height * .5f - arenaY);
+	int y1 = (int)((float)renderState.height * .5f + arenaY);
+
+	drawRectinPixels(0, 0, renderState.width, y0, color);
+	drawRectinPixels(0, y1, x1, renderState.height, color);
+	drawRectinPixels(0, y0, x0, y1, color);
+	drawRectinPixels(x1, y0, renderState.width, renderState.height, color);
+}
+
 /* Draw ten numbers from 0 to 9 */
 void drawNumber(int number, float x, float y, float size, u32 color)
 {
@@ -423,17 +453,3 @@ void drawText(const char* text, float x, float y, float size, u32 color) {
 	}
 }
 
-void drawArenaBorders(float arenaX, float arenaY, u32 color) {
-	arenaX *= renderState.height * renderScale;
-	arenaY *= renderState.height * renderScale;
-
-	int x0 = (int)((float)renderState.width * .5f - arenaX);
-	int x1 = (int)((float)renderState.width * .5f + arenaX);
-	int y0 = (int)((float)renderState.height * .5f - arenaY);
-	int y1 = (int)((float)renderState.height * .5f + arenaY);
-
-	drawRectinPixels(0, 0, renderState.width, y0, color);
-	drawRectinPixels(0, y1, x1, renderState.height, color);
-	drawRectinPixels(0, y0, x0, y1, color);
-	drawRectinPixels(x1, y0, renderState.width, renderState.height, color);
-}
