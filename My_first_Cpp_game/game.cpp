@@ -60,7 +60,12 @@ void Game::freeMemory()
 		delete[] this->table[i];
 	delete[] this->table;
 
+	for (int i = 0; i < this->mode; i++)
+		delete[] this->prevTable[i];
+	delete[] this->prevTable;
+
 	this->table = nullptr;
+	this->prevTable = nullptr;
 }
 void Game::addCell()
 {
@@ -219,20 +224,48 @@ void Game::rightMove()
 	}
 }
 /*********************************************************************************************************************/
-bool Game::isEqual(int** temp)
+bool Game::isEqual()
 {
 	for (int i = 0; i < this->mode; i++)
 		for (int j = 0; j < this->mode; j++)
-			if (temp[i][j] != this->table[i][j])
+			if (this->prevTable[i][j] != this->table[i][j])
 				return false;
-
 	return true;
 }
 /*********************************************************************************************************************/
-
 bool Game::isOver()
 {
-	return 0;
+
+	bool flag1 = false, flag2 = false;
+	for (int i = 0; i < this->mode; i++)
+		for (int j = 0; j < this->mode; j++)
+			if (this->table[i][j] == 0)
+			{
+				flag1 = true;
+				break;
+			}
+
+	for (int i = 0; i < this->mode - 1; i++)
+		for (int j = 0; j < this->mode - 1; j++)
+			if (this->table[i + 1][j] == this->table[i][j] || this->table[i][j + 1] == this->table[i][j])
+			{
+				flag2 = true;
+				break;
+			}
+
+	if (flag1 || flag2)
+		return false;
+	return true;
+}
+void Game::setPrevTable()
+{
+	this->prevTable = new int* [this->mode];
+	for (int i = 0; i < this->mode; i++)
+		this->prevTable[i] = new int[this->mode];
+
+	for (int i = 0; i < this->mode; i++)
+		for (int j = 0; j < this->mode; j++)
+			this->prevTable[i][j] = this->table[i][j];
 }
 
 Game the_2048;
@@ -240,40 +273,56 @@ Game the_2048;
 /* FUNCTION */
 void stimulateGame(Input* input, float deltaTime)
 {
-	drawArenaBorders(arenaHalfSizeX, arenaHalfSizeY, 0xffffff);
+	clearScreen(0xffffff);
 	ShowCursor(true);
+
+	if (isPressed(BUTTON_ESCAPE))
+	{
+		VirtualFree(renderState.memory, 0, MEM_RELEASE);
+		renderState.memory = nullptr;
+		the_2048.freeMemory();
+		running = false;
+		return;
+	}
+	
 
 	if (currentGameMode == GM_GAMEPLAY) 
 	{
+		// Set previous array to preTable variable in Game class
+		if (!the_2048.isTableNull())
+			the_2048.setPrevTable();
+
 		// Get user input LEFT, RIGHT, UP OR DOWN
+		bool getInput = false;
 		if (isPressed(BUTTON_LEFT)) 
+		{
 			the_2048.leftMove();
+			getInput = true;
+		}
 		if (isPressed(BUTTON_RIGHT)) 
+		{
 			the_2048.rightMove();
+			getInput = true;
+
+		}
 		if (isPressed(BUTTON_UP))
+		{
 			the_2048.upMove();
+			getInput = true;
+
+		}
 		if (isPressed(BUTTON_DOWN))
+		{
 			the_2048.downMove();
+			getInput = true;
+		}
 
 		
 		/*************************************************************************************************************/
 		// Check isEqual, must CHANGE THIS !!!
-		if (the_2048.getTable() == nullptr)
-			return;
-
-		int** temp = new int* [the_2048.getMode()];
-		for (int i = 0; i < the_2048.getMode(); i++)
-			temp[i] = new int[the_2048.getMode()];
-
-		for (int i = 0; i < the_2048.getMode(); i++)
-			for (int j = 0; j < the_2048.getMode(); j++)
-				temp[i][j] = the_2048.getTable()[i][j];
-
-		//the_2048.isEqual(temp);
-
-		for (int i = 0; i < the_2048.getMode(); i++)
-			delete[] temp[i];
-		delete[] temp;
+		if (!the_2048.isTableNull() && !the_2048.isPrevTableNull() && getInput)
+			if (!the_2048.isEqual())
+				the_2048.addCell();
 		/*************************************************************************************************************/
 
 
@@ -284,7 +333,15 @@ void stimulateGame(Input* input, float deltaTime)
 		else
 			drawTable(the_2048.getMode(), 10, 2, 0xB34670, 0x6683D5, the_2048.getTable(), 0xffffff);
 
-
+		// Check the game is lose or not
+		if (!the_2048.isTableNull())
+		{
+			if (the_2048.isOver())
+			{
+				drawText("YOU LOSE", -10, -10, 1, 0xf401e0);
+				return;
+			}
+		}
 	} 
 	else
 	{
@@ -300,15 +357,15 @@ void stimulateGame(Input* input, float deltaTime)
 		if (selectButton == 0) 
 		{
 			// draw "4x4" or "5x5" mode.
-			drawText("MODE FOUR", -80, -10, 1, 0xff0000);
-			drawText("MODE FIVE", 20, -10, 1, 0xaaaaaa);
+			drawText("MODE FOUR", -70, -10, 1, 0xff0000);
+			drawText("MODE FIVE", 10, -10, 1, 0xaaaaaa);
 			the_2048.setMode(MODE_4);
 		}
 		else
 		{
 			// draw "5x5" or "4x4" mode with different color.
-			drawText("MODE FOUR", -80, -10, 1, 0xaaaaaa);
-			drawText("MODE FIVE", 20, -10, 1, 0xff0000);
+			drawText("MODE FOUR", -70, -10, 1, 0xaaaaaa);
+			drawText("MODE FIVE", 10, -10, 1, 0xff0000);
 			the_2048.setMode(MODE_5);
 		}
 

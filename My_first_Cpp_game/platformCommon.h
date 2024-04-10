@@ -15,6 +15,7 @@ enum
 	BUTTON_LEFT,
 	BUTTON_RIGHT,
 	BUTTON_ENTER,
+	BUTTON_ESCAPE,
 
 	BUTTON_COUNT, // Should be the last item
 };

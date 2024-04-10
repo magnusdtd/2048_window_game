@@ -14,6 +14,8 @@ void renderBackGround()
 
 void clearScreen(u32 color)
 {
+	if (renderState.memory == nullptr)
+		return;
 	u32* pixel = (u32*) renderState.memory;
 	for (int y = 0; y < renderState.height; y++)
 		for (int x = 0; x < renderState.width; x++)
@@ -56,21 +58,6 @@ void drawRect(float x, float y, float halfSizeX, float halfSizeY, u32 color)
 	int y1 = (int) y + halfSizeY;
 
 	drawRectinPixels(x0, y0, x1, y1, color);
-}
-
-void drawArenaBorders(float arenaX, float arenaY, u32 color) {
-	arenaX *= renderState.height * renderScale;
-	arenaY *= renderState.height * renderScale;
-
-	int x0 = (int)((float)renderState.width * .5f - arenaX);
-	int x1 = (int)((float)renderState.width * .5f + arenaX);
-	int y0 = (int)((float)renderState.height * .5f - arenaY);
-	int y1 = (int)((float)renderState.height * .5f + arenaY);
-
-	drawRectinPixels(0, 0, renderState.width, y0, color);
-	drawRectinPixels(0, y1, x1, renderState.height, color);
-	drawRectinPixels(0, y0, x0, y1, color);
-	drawRectinPixels(x1, y0, renderState.width, renderState.height, color);
 }
 
 /* Draw ten numbers from 0 to 9 */

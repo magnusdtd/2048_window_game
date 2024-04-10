@@ -9,10 +9,10 @@
 
 /* MACROS */
 #define MAKEINTRESOURCEW(i) ((LPWSTR)((ULONG_PTR)((WORD)(i))))
-#define processButton(b, vk)\
+#define processButton(button, vk)\
 case vk : {\
-	input.buttons[b].changed = isDown != input.buttons[b].isDown; \
-	input.buttons[b].isDown = isDown; \
+	input.buttons[button].changed = isDown != input.buttons[button].isDown; \
+	input.buttons[button].isDown = isDown; \
 }	break;
 
 /*WARNING: carefull whenever you change this variable*/
@@ -151,6 +151,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 						processButton(BUTTON_LEFT, VK_LEFT);
 						processButton(BUTTON_RIGHT, VK_RIGHT);
 						processButton(BUTTON_ENTER, VK_RETURN);
+						processButton(BUTTON_ESCAPE, VK_ESCAPE);
 					}
 				}
 				default: 
