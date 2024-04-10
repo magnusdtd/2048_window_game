@@ -9,9 +9,7 @@ float playerPosX = 0.f;
 float playerPosY = 0.f;
 bool selectButton;
 float arenaHalfSizeX = 85, arenaHalfSizeY = 45;
-int a[4][4];
 int MODE_2048 = 4;
-
 enum GameMode {
 	GM_MENU,
 	GM_GAMEPLAY,
@@ -73,7 +71,7 @@ void Game::addCell()
 		ri = rand() % 4;
 		if (this->table[li][ri] == 0)
 		{
-			a[li][ri] = 2;
+			this->table[li][ri] = 2;
 			break;
 		}
 	}
@@ -81,24 +79,157 @@ void Game::addCell()
 }
 void Game::upMove()
 {
-
+	int li, ri;
+	for (int j = 0; j < this->mode; j++)
+	{
+		li = 0; ri = j;
+		for (int i = 1; i < this->mode; i++)
+		{
+			if (this->table[i][j] != 0)
+			{
+				if (this->table[i - 1][j] == 0 || this->table[i - 1][j] == this->table[i][j])
+				{
+					if (this->table[li][ri] == this->table[i][j])
+					{
+						this->table[li][ri] *= 2;
+						this->table[i][j] = 0;
+					}
+					else if (this->table[li][ri] == 0)
+					{
+						this->table[li][ri] = this->table[i][j];
+						this->table[i][j] = 0;
+					}
+					else
+					{
+						this->table[++li][ri] = this->table[i][j];
+						this->table[i][j] = 0;
+					}
+				}
+				else li++;
+			}
+		}
+	}
 }
 void Game::downMove()
-{
-
+{ 
+	int li, ri;
+	for (int j = 0; j < this->mode; j++)
+	{
+		li = this->mode - 1, ri = j;
+		for (int i = this->mode - 2; i >= 0; i--)
+		{
+			if (this->table[i][j] != 0)
+			{
+				if (this->table[i + 1][j] == 0 || this->table[i + 1][j] == this->table[i][j])
+				{
+					if (this->table[li][ri] == this->table[i][j])
+					{
+						this->table[li][ri] *= 2;
+						this->table[i][j] = 0;
+					}
+					else
+					{
+						if (this->table[li][ri] == 0)
+						{
+							this->table[li][ri] = this->table[i][j];
+							this->table[i][j] = 0;
+						}
+						else
+						{
+							this->table[--li][ri] = this->table[i][j];
+							this->table[i][j] = 0;
+						}
+					}
+				}
+				else li--;
+			}
+		}
+	}
 }
 void Game::leftMove()
 {
-
+	int li, ri;
+	for (int i = 0; i < this->mode; i++)
+	{
+		li = i, ri = 0;
+		for (int j = 1; j < this->mode; j++)
+		{
+			if (this->table[i][j] != 0)
+			{
+				if (this->table[i][j - 1] == 0 || this->table[i][j - 1] == this->table[i][j])
+				{
+					if (this->table[li][ri] == this->table[i][j])
+					{
+						this->table[li][ri] *= 2;
+						this->table[i][j] = 0;
+					}
+					else
+					{
+						if (this->table[li][ri] == 0)
+						{
+							this->table[li][ri] = this->table[i][j];
+							this->table[i][j] = 0;
+						}
+						else
+						{
+							this->table[li][++ri] = this->table[i][j];
+							this->table[i][j] = 0;
+						}
+					}
+				}
+				else ri++;
+			}
+		}
+	}
 }
 void Game::rightMove()
 {
-
+	int li, ri;
+	for (int i = 0; i < this->mode; i++)
+	{
+		li = i, ri = this->mode - 1;
+		for (int j = this->mode - 2; j >= 0; j--)
+		{
+			if (this->table[i][j] != 0)
+			{
+				if (this->table[i][j + 1] == 0 || this->table[i][j + 1] == this->table[i][j])
+				{
+					if (this->table[li][ri] == this->table[i][j])
+					{
+						this->table[li][ri] *= 2;
+						this->table[i][j] = 0;
+					}
+					else
+					{
+						if (this->table[li][ri] == 0)
+						{
+							this->table[li][ri] = this->table[i][j];
+							this->table[i][j] = 0;
+						}
+						else
+						{
+							this->table[li][--ri] = this->table[i][j];
+							this->table[i][j] = 0;
+						}
+					}
+				}
+				else ri--;
+			}
+		}
+	}
 }
-int Game::isEqual()
+/*********************************************************************************************************************/
+bool Game::isEqual(int** temp)
 {
-	return 0;
+	for (int i = 0; i < this->mode; i++)
+		for (int j = 0; j < this->mode; j++)
+			if (temp[i][j] != this->table[i][j])
+				return false;
+
+	return true;
 }
+/*********************************************************************************************************************/
+
 bool Game::isOver()
 {
 	return 0;
@@ -112,11 +243,40 @@ void stimulateGame(Input* input, float deltaTime)
 	drawArenaBorders(arenaHalfSizeX, arenaHalfSizeY, 0xffffff);
 	ShowCursor(true);
 
-
-	float speed = 50.f;
-
 	if (currentGameMode == GM_GAMEPLAY) 
 	{
+		// Get user input LEFT, RIGHT, UP OR DOWN
+		if (isPressed(BUTTON_LEFT)) 
+			the_2048.leftMove();
+		if (isPressed(BUTTON_RIGHT)) 
+			the_2048.rightMove();
+		if (isPressed(BUTTON_UP))
+			the_2048.upMove();
+		if (isPressed(BUTTON_DOWN))
+			the_2048.downMove();
+
+		
+		/*************************************************************************************************************/
+		// Check isEqual, must CHANGE THIS !!!
+		if (the_2048.getTable() == nullptr)
+			return;
+
+		int** temp = new int* [the_2048.getMode()];
+		for (int i = 0; i < the_2048.getMode(); i++)
+			temp[i] = new int[the_2048.getMode()];
+
+		for (int i = 0; i < the_2048.getMode(); i++)
+			for (int j = 0; j < the_2048.getMode(); j++)
+				temp[i][j] = the_2048.getTable()[i][j];
+
+		//the_2048.isEqual(temp);
+
+		for (int i = 0; i < the_2048.getMode(); i++)
+			delete[] temp[i];
+		delete[] temp;
+		/*************************************************************************************************************/
+
+
 		/*Half size should be 8 if MODE_5 is selected.
 		Half size should be 10 if MODE_4 (default) is selected.*/
 		if (the_2048.getMode() == MODE_5)
@@ -135,7 +295,6 @@ void stimulateGame(Input* input, float deltaTime)
 		{
 			the_2048.__init__();
 			currentGameMode = GM_GAMEPLAY;
-			// 
 		}
 
 		if (selectButton == 0) 

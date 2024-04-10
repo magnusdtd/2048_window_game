@@ -3,9 +3,9 @@
 #include "platformCommon.h"
 
 /* MACROS */
-#define isDown(b) input->buttons[b].isDown
-#define isPressed(b) (input->buttons[b].isDown && input->buttons[b].changed)
-#define isReleased(b) (!input->buttons[b].isDown && input->buttons[b].changed)
+#define isDown(button) input->buttons[button].isDown
+#define isPressed(button) (input->buttons[button].isDown && input->buttons[button].changed)
+#define isReleased(button) (!input->buttons[button].isDown && input->buttons[button].changed)
 #define MODE_4 4
 #define MODE_5 5
 
@@ -26,7 +26,7 @@ public:
 	void downMove();
 	void leftMove();
 	void rightMove();
-	int isEqual();
+	bool isEqual(int** temp);
 	bool isOver();
 	void setMode(int mode) { this->mode = mode; }
 	int getMode() { return this->mode; }
