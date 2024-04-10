@@ -40,6 +40,19 @@ void Game::__init__()
 	for (int i = 0; i < this->mode; i++)
 		for (int j = 0; j < this->mode; j++)
 			this->table[i][j] = 0;
+
+	// Create 2 cells at first
+	int Ax = random(0, this->mode - 1), Ay = random(0, this->mode - 1), Bx = 0, By = 0;
+	while (true) // Loop until A != B;
+	{
+		Bx = random(0, this->mode - 1);
+		By = random(0, this->mode - 1);
+		if (Ax != Bx && Ay != By)
+			break;
+	}
+
+	this->table[Ax][Ay] = 2;
+	this->table[Bx][By] = 2;
 }
 void Game::freeMemory()
 {
@@ -48,6 +61,8 @@ void Game::freeMemory()
 	for (int i = 0; i < MODE_2048; i++)
 		delete[] this->table[i];
 	delete[] this->table;
+
+	this->table = nullptr;
 }
 void Game::addCell()
 {
@@ -102,20 +117,12 @@ void stimulateGame(Input* input, float deltaTime)
 
 	if (currentGameMode == GM_GAMEPLAY) 
 	{
-		if (isDown(BUTTON_UP))
-			playerPosX -= speed * deltaTime;
-		if (isDown(BUTTON_DOWN))
-			playerPosX += speed * deltaTime;
-		if (isDown(BUTTON_RIGHT))
-			playerPosY -= speed * deltaTime;
-		if (isDown(BUTTON_LEFT))
-			playerPosY += speed * deltaTime;
-
 		/*Half size should be 8 if MODE_5 is selected.
-		Half size should be 10 if MODE_4 is selected.*/
-		drawTable(MODE_4, 10, 2, 0xB34670, 0x6683D5, a, 0xffffff);
-
-		drawRect(playerPosY, playerPosX, 1, 1, 0x00ff22);
+		Half size should be 10 if MODE_4 (default) is selected.*/
+		if (the_2048.getMode() == MODE_5)
+			drawTable(the_2048.getMode(), 8, 2, 0xB34670, 0x6683D5, the_2048.getTable(), 0xffffff);
+		else
+			drawTable(the_2048.getMode(), 10, 2, 0xB34670, 0x6683D5, the_2048.getTable(), 0xffffff);
 
 
 	} 
@@ -136,14 +143,14 @@ void stimulateGame(Input* input, float deltaTime)
 			// draw "4x4" or "5x5" mode.
 			drawText("MODE FOUR", -80, -10, 1, 0xff0000);
 			drawText("MODE FIVE", 20, -10, 1, 0xaaaaaa);
-			the_2048.setMode(4);
+			the_2048.setMode(MODE_4);
 		}
 		else
 		{
 			// draw "5x5" or "4x4" mode with different color.
 			drawText("MODE FOUR", -80, -10, 1, 0xaaaaaa);
 			drawText("MODE FIVE", 20, -10, 1, 0xff0000);
-			the_2048.setMode(5);
+			the_2048.setMode(MODE_5);
 		}
 
 		drawNumber(2048, 47, 20, 7, 0x000000);

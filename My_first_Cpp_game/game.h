@@ -6,6 +6,8 @@
 #define isDown(b) input->buttons[b].isDown
 #define isPressed(b) (input->buttons[b].isDown && input->buttons[b].changed)
 #define isReleased(b) (!input->buttons[b].isDown && input->buttons[b].changed)
+#define MODE_4 4
+#define MODE_5 5
 
 /* CLASS Game*/
 class Game {
@@ -14,7 +16,7 @@ class Game {
 	int** table = nullptr;
 	int mode = 4;
 public:
-	void setScore(int score) {this->score = score;}
+	void setScore(int score) { this->score = score; }
 	int getScore() {return score;}
 	void saveScore();
 	void __init__();
@@ -26,7 +28,9 @@ public:
 	void rightMove();
 	int isEqual();
 	bool isOver();
-	void setMode(int mode) { this->mode = mode; };
+	void setMode(int mode) { this->mode = mode; }
+	int getMode() { return this->mode; }
+	int** getTable() { return this->table; }
 };
 
 /* FUNCTION */
