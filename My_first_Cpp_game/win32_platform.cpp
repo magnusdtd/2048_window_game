@@ -42,8 +42,9 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		case WM_DESTROY: 
 		{	
 			VirtualFree(renderState.memory, 0, MEM_RELEASE);
-			running = false;
 			renderState.memory = nullptr;
+			the_2048.freeMemory();
+			running = false;
 		} break;
 
 		case WM_SIZE: 
@@ -92,7 +93,8 @@ Return value:
 */
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {	
-	
+	srand(time(0));
+
 	// Create window class
 	WNDCLASS windowClass = {};
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -120,9 +122,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		QueryPerformanceFrequency(&perf);
 		performanceFrequency = (double)perf.QuadPart;
 	}
-	
-	// initialize Game class
-	__init__();
 
 	// Main loop of the game
 	while (running)

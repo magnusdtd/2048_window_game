@@ -441,7 +441,7 @@ void drawText(const char* text, float x, float y, float size, u32 color) {
 }
 
 
-void drawTable(int mode, float half_size_of_each_cell, float distance_of_each_cell, u32 cell_color, u32 background_color, int scores[][4], u32 number_color)
+void drawTable(int mode, float half_size_of_each_cell, float distance_of_each_cell, u32 cell_color, u32 background_color, int scores[4][4], u32 number_color)
 {
 	float x0, y0;
 	// Fomula
