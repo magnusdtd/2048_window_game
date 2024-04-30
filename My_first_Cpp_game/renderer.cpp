@@ -437,17 +437,33 @@ void drawTable(int mode,
 				int** scores, 
 				u32 number_color)
 {
+	// Handle exception
 	if (scores == nullptr)
 		return;
 
 	float x0, y0;
 	// Fomula
-	if (mode % 2 == 1)
-		x0 = -(half_size_of_each_cell * (mode - 1) + distance_of_each_cell * (mode - 3)), y0 = -x0;
-	else
-		x0 = -(half_size_of_each_cell * (mode - 1) + 0.5f * (mode - 2) * distance_of_each_cell + 1), y0 = -x0;
+	if (mode % 2 == 1) {
+		x0 = -(half_size_of_each_cell 
+			* (mode - 1) 
+			+ distance_of_each_cell 
+			* ((int) mode / 2));
+		y0 = -x0;
+	}
+	else {
+		x0 = -(half_size_of_each_cell 
+			* (mode - 1) 
+			+ 0.5f 
+			* (mode - 2) 
+			* distance_of_each_cell + 1);
+		y0 = -x0;
+	}
 	// Draw background
-	drawRect(0, 0, -x0 + half_size_of_each_cell * 1.5f, y0 + half_size_of_each_cell * 1.5f, background_color);
+	drawRect(0, 
+			0, 
+			-x0 + half_size_of_each_cell * 1.5f, 
+			y0 + half_size_of_each_cell * 1.5f, 
+			background_color);
 	
 	// Draw cells
 	for (int i = 0; i < mode; i++) 
@@ -456,11 +472,8 @@ void drawTable(int mode,
 					y0 - i * half_size_of_each_cell * 2.f - distance_of_each_cell * i, 
 					half_size_of_each_cell, 
 					half_size_of_each_cell, 
-				cell_color[(scores[i][j] == 0) ? 0 : ((u32)log2(scores[i][j]) % number_of_cell_color)]);
+					cell_color[(scores[i][j] == 0) ? 0 : ((u32)log2(scores[i][j]) % number_of_cell_color)]);
 
-	// Handle exception
-	if (scores == nullptr)
-		return;
 
 	// Draw number
 	for (int i = 0; i < mode; i++)

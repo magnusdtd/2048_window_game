@@ -4,14 +4,14 @@
 #include "renderer.h"
 #include <fstream>
 
-int selectButton = 1;
 enum GameMode {
 	MODE_3 = 3,
 	MODE_4 = 4,
 	MODE_5 = 5,
 };
-GameMode THE_2048_MODE = MODE_4;
-int NUMBEROFMODE = sizeof(THE_2048_MODE) / sizeof(MODE_3);
+GameMode THE_2048_MODE = MODE_3;
+const int NUMBEROFMODE = 3;
+int selectButton = MODE_3 - NUMBEROFMODE;
 const u32 numberOfCellColor = 15;
 u32 cellColor[15] = { 0x666699,
 						0xff9900,
@@ -33,7 +33,7 @@ enum GameState {
 	GM_INTRO,
 	GM_GAMEPLAY,
 };
-GameState currentGameMode = GM_MENU;
+GameState currentGameState = GM_MENU;
 
 void Game::saveScore()
 {
@@ -88,11 +88,11 @@ void Game::freeMemory()
 }
 void Game::addCell()
 {
-	int li, ri;
+	int li, ri, mode = this->getMode();
 	while (true)
 	{
-		li = rand() % 4;
-		ri = rand() % 4;
+		li = rand() % mode;
+		ri = rand() % mode;
 		if (this->table[li][ri] == 0)
 		{
 			this->table[li][ri] = 2;
@@ -315,7 +315,7 @@ void stimulateGame(Input* input, float deltaTime)
 	}
 	
 
-	if (currentGameMode == GM_GAMEPLAY) 
+	if (currentGameState == GM_GAMEPLAY) 
 	{
 		// Draw introduction
 		drawNumber(2048, 85, 30, 2, random(0, 0xffffff));
@@ -356,8 +356,10 @@ void stimulateGame(Input* input, float deltaTime)
 		Half size should be 10 if MODE_4 (default) is selected.*/
 		if (the_2048.getMode() == MODE_5)
 			drawTable(MODE_5, 8, 2, cellColor, numberOfCellColor, 0x6683D5, the_2048.getTable(), 0xffffff);
-		else
+		else if (the_2048.getMode() == MODE_4)
 			drawTable(MODE_4, 10, 2, cellColor, numberOfCellColor, 0x6683D5, the_2048.getTable(), 0xffffff);
+		else
+			drawTable(MODE_3, 12, 2, cellColor, numberOfCellColor, 0x6683D5, the_2048.getTable(), 0xffffff);
 
 		// Draw score
 		drawText("SCORE", -80, 30, 0.8, 0xEB7527);
@@ -366,7 +368,7 @@ void stimulateGame(Input* input, float deltaTime)
 		// Check the game is lose or not
 		if (!the_2048.isTableNull())
 		{
-			if (the_2048.isOver() && the_2048.isEqual())
+			if (the_2048.isOver())
 			{
 				drawText("YOU LOSE", -70, -10, 1, 0xcc0099);
 				return;
@@ -385,17 +387,17 @@ void stimulateGame(Input* input, float deltaTime)
 	else
 	{
 		if (isPressed(BUTTON_UP))
-			(selectButton += (NUMBEROFMODE + 1)) %= NUMBEROFMODE;
-		else if (isPressed(BUTTON_DOWN))
 			(selectButton += (NUMBEROFMODE - 1)) %= NUMBEROFMODE;
+		else if (isPressed(BUTTON_DOWN))
+			(selectButton += (NUMBEROFMODE + 1)) %= NUMBEROFMODE;
 
 		if (isPressed(BUTTON_ENTER))
 		{
 			the_2048.__init__();
-			currentGameMode = GM_GAMEPLAY;
+			currentGameState = GM_GAMEPLAY;
 		}
 
-		if (selectButton == 0) 
+		if (selectButton == (MODE_3 - NUMBEROFMODE))
 		{
 			// draw "3x3", "4x4" or "5x5" mode.
 			drawText("MODE THREE", -18, -5, 0.7, 0x0099ff);
@@ -403,7 +405,7 @@ void stimulateGame(Input* input, float deltaTime)
 			drawText("MODE FIVE", -18, -25, 0.7, 0x666699);
 			the_2048.setMode(MODE_3);
 		}
-		else if (selectButton == 1)
+		else if (selectButton == (MODE_4 - NUMBEROFMODE))
 		{
 			// draw "3x3", "4x4" or "5x5" mode with different color.
 			drawText("MODE THREE", -18, -5, 0.7, 0x666699);
