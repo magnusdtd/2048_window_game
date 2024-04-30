@@ -91,16 +91,16 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 Return value:
 	If the function succeeds, terminating when it receives a WM_QUIT message, it should return the exit value contained in that message's wParam parameter. If the function terminates before entering the message loop, it should return zero.
 */
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {	
-	srand(time(0));
+	srand(time(nullptr));
 
 	// Create window class
 	WNDCLASS windowClass = {};
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpszClassName = L"Game Window Class";
 	windowClass.lpfnWndProc = windowCallBack;
-	windowClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE("IDI_ICON1"));
+	/*windowClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE("IDI_ICON1"));*/
 
 	// Register class
 	RegisterClass(&windowClass);
@@ -113,14 +113,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	Input input = {};
 
 	// Manipulate frame per second
-	double deltaTime = 0.0166667f; // 60 FPS
+	float deltaTime = 0.0166667f; // 60 FPS
 	LARGE_INTEGER frameBeginTime;
 	QueryPerformanceCounter(&frameBeginTime);
-	double performanceFrequency;
+	float performanceFrequency;
 	{
 		LARGE_INTEGER perf;
 		QueryPerformanceFrequency(&perf);
-		performanceFrequency = (double)perf.QuadPart;
+		performanceFrequency = (float)perf.QuadPart;
 	}
 
 	// Main loop of the game
@@ -142,7 +142,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				case WM_KEYDOWN: 
 				{
 					u32 vkCode = (u32)message.wParam;
-					bool isDown = ((message.lParam & (1 << 31)) == 0);
+					bool isDown = ((message.lParam & (1LL << 31)) == 0);
 				
 					switch (vkCode)
 					{
@@ -171,7 +171,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 		LARGE_INTEGER frameEndTime;
 		QueryPerformanceCounter(&frameEndTime);
-		deltaTime = (double)(frameBeginTime.QuadPart - frameEndTime.QuadPart) / performanceFrequency;
+		deltaTime = (float)(frameBeginTime.QuadPart - frameEndTime.QuadPart) / performanceFrequency;
 		frameBeginTime = frameEndTime;
 	}
 

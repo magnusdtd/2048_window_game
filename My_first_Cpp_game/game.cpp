@@ -2,19 +2,38 @@
 #include "game.h"
 #include "variables.h"
 #include "renderer.h"
-#include <iostream>
 #include <fstream>
 
-float playerPosX = 0.f;
-float playerPosY = 0.f;
-bool selectButton;
-float arenaHalfSizeX = 85, arenaHalfSizeY = 45;
-int MODE_2048 = 4;
+int selectButton = 1;
 enum GameMode {
+	MODE_3 = 3,
+	MODE_4 = 4,
+	MODE_5 = 5,
+};
+GameMode THE_2048_MODE = MODE_4;
+int NUMBEROFMODE = sizeof(THE_2048_MODE) / sizeof(MODE_3);
+const u32 numberOfCellColor = 15;
+u32 cellColor[15] = { 0x666699,
+						0xff9900,
+						0x993333,
+						0xff0000,
+						0xcc0066,
+						0x990099,
+						0xcc00ff,
+						0x6600ff,
+						0x000066,
+						0x0066ff,
+						0x00ccff,
+						0x00cc99,
+						0x33cc33,
+						0x99ffcc,
+						0xccffff };
+enum GameState {
 	GM_MENU,
+	GM_INTRO,
 	GM_GAMEPLAY,
 };
-GameMode currentGameMode = GM_MENU;
+GameState currentGameMode = GM_MENU;
 
 void Game::saveScore()
 {
@@ -56,7 +75,7 @@ void Game::freeMemory()
 {
 	if (this->table == nullptr)
 		return;
-	for (int i = 0; i < MODE_2048; i++)
+	for (int i = 0; i < THE_2048_MODE; i++)
 		delete[] this->table[i];
 	delete[] this->table;
 
@@ -96,6 +115,8 @@ void Game::upMove()
 				{
 					if (this->table[li][ri] == this->table[i][j])
 					{
+						// update score
+						this->score++;
 						this->table[li][ri] *= 2;
 						this->table[i][j] = 0;
 					}
@@ -129,6 +150,8 @@ void Game::downMove()
 				{
 					if (this->table[li][ri] == this->table[i][j])
 					{
+						// update score
+						this->score++;
 						this->table[li][ri] *= 2;
 						this->table[i][j] = 0;
 					}
@@ -165,6 +188,8 @@ void Game::leftMove()
 				{
 					if (this->table[li][ri] == this->table[i][j])
 					{
+						// update score
+						this->score++;
 						this->table[li][ri] *= 2;
 						this->table[i][j] = 0;
 					}
@@ -201,6 +226,8 @@ void Game::rightMove()
 				{
 					if (this->table[li][ri] == this->table[i][j])
 					{
+						// update score
+						this->score++;
 						this->table[li][ri] *= 2;
 						this->table[i][j] = 0;
 					}
@@ -231,30 +258,32 @@ bool Game::isEqual()
 			if (this->prevTable[i][j] != this->table[i][j])
 				return false;
 	return true;
-}
+} // Change this when implement undo / redo
 /*********************************************************************************************************************/
 bool Game::isOver()
 {
-
-	bool flag1 = false, flag2 = false;
-	for (int i = 0; i < this->mode; i++)
-		for (int j = 0; j < this->mode; j++)
+	int n = this->mode;
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < n; j++) {
 			if (this->table[i][j] == 0)
-			{
-				flag1 = true;
-				break;
+				return false;
+			if (i == n - 1 && j == n - 1)
+				continue;
+			else if (i == n - 1) {
+				if (this->table[i][j] == this->table[i][j + 1])
+					return false;
 			}
-
-	for (int i = 0; i < this->mode - 1; i++)
-		for (int j = 0; j < this->mode - 1; j++)
-			if (this->table[i + 1][j] == this->table[i][j] || this->table[i][j + 1] == this->table[i][j])
-			{
-				flag2 = true;
-				break;
+			else if (j == n - 1) {
+				if (this->table[i][j] == this->table[i + 1][j])
+					return false;
 			}
+			else {
+				if (this->table[i + 1][j] == this->table[i][j] || this->table[i][j + 1] == this->table[i][j])
+					return false;
+			}
+		}
+	
 
-	if (flag1 || flag2)
-		return false;
 	return true;
 }
 void Game::setPrevTable()
@@ -288,65 +317,77 @@ void stimulateGame(Input* input, float deltaTime)
 
 	if (currentGameMode == GM_GAMEPLAY) 
 	{
+		// Draw introduction
+		drawNumber(2048, 85, 30, 2, random(0, 0xffffff));
+		drawText("PRESS ESC TO EXIT", (float) 50, (float) 10, 0.3, 0x4032E7);
+		drawText("USE ARROW TO PLAY GAME", 50, 0, 0.3, 0x4032E7);
+		drawText("ENJOY IT", 55, -35, 0.7, random(0, 0xffffff));
+
 		// Set previous array to preTable variable in Game class
 		if (!the_2048.isTableNull())
 			the_2048.setPrevTable();
 
 		// Get user input LEFT, RIGHT, UP OR DOWN
-		bool getInput = false;
+		bool isGetInput = false;
 		if (isPressed(BUTTON_LEFT)) 
 		{
 			the_2048.leftMove();
-			getInput = true;
+			isGetInput = true;
 		}
 		if (isPressed(BUTTON_RIGHT)) 
 		{
 			the_2048.rightMove();
-			getInput = true;
+			isGetInput = true;
 
 		}
 		if (isPressed(BUTTON_UP))
 		{
 			the_2048.upMove();
-			getInput = true;
+			isGetInput = true;
 
 		}
 		if (isPressed(BUTTON_DOWN))
 		{
 			the_2048.downMove();
-			getInput = true;
+			isGetInput = true;
 		}
-
-		
-		/*************************************************************************************************************/
-		// Check isEqual, must CHANGE THIS !!!
-		if (!the_2048.isTableNull() && !the_2048.isPrevTableNull() && getInput)
-			if (!the_2048.isEqual())
-				the_2048.addCell();
-		/*************************************************************************************************************/
-
 
 		/*Half size should be 8 if MODE_5 is selected.
 		Half size should be 10 if MODE_4 (default) is selected.*/
 		if (the_2048.getMode() == MODE_5)
-			drawTable(the_2048.getMode(), 8, 2, 0xB34670, 0x6683D5, the_2048.getTable(), 0xffffff);
+			drawTable(MODE_5, 8, 2, cellColor, numberOfCellColor, 0x6683D5, the_2048.getTable(), 0xffffff);
 		else
-			drawTable(the_2048.getMode(), 10, 2, 0xB34670, 0x6683D5, the_2048.getTable(), 0xffffff);
+			drawTable(MODE_4, 10, 2, cellColor, numberOfCellColor, 0x6683D5, the_2048.getTable(), 0xffffff);
+
+		// Draw score
+		drawText("SCORE", -80, 30, 0.8, 0xEB7527);
+		drawNumber(the_2048.getScore(), -70, 20, 1.1, 0x0EC2F4);
 
 		// Check the game is lose or not
 		if (!the_2048.isTableNull())
 		{
-			if (the_2048.isOver())
+			if (the_2048.isOver() && the_2048.isEqual())
 			{
-				drawText("YOU LOSE", -10, -10, 1, 0xf401e0);
+				drawText("YOU LOSE", -70, -10, 1, 0xcc0099);
 				return;
 			}
 		}
+
+		/*************************************************************************************************************/
+		// Check isEqual, must CHANGE THIS !!!
+		if (!the_2048.isTableNull() && !the_2048.isPrevTableNull() && isGetInput)
+			if (!the_2048.isEqual())
+				the_2048.addCell();
+		/*************************************************************************************************************/
 	} 
+	/* MAIN MENU*/
+	// Need a introductory menu
 	else
 	{
-		if (isPressed(BUTTON_LEFT) || isPressed(BUTTON_RIGHT))
-			selectButton = !selectButton;
+		if (isPressed(BUTTON_UP))
+			(selectButton += (NUMBEROFMODE + 1)) %= NUMBEROFMODE;
+		else if (isPressed(BUTTON_DOWN))
+			(selectButton += (NUMBEROFMODE - 1)) %= NUMBEROFMODE;
 
 		if (isPressed(BUTTON_ENTER))
 		{
@@ -356,19 +397,29 @@ void stimulateGame(Input* input, float deltaTime)
 
 		if (selectButton == 0) 
 		{
-			// draw "4x4" or "5x5" mode.
-			drawText("MODE FOUR", -70, -10, 1, 0xff0000);
-			drawText("MODE FIVE", 10, -10, 1, 0xaaaaaa);
+			// draw "3x3", "4x4" or "5x5" mode.
+			drawText("MODE THREE", -18, -5, 0.7, 0x0099ff);
+			drawText("MODE FOUR", -18, -15, 0.7, 0x666699);
+			drawText("MODE FIVE", -18, -25, 0.7, 0x666699);
+			the_2048.setMode(MODE_3);
+		}
+		else if (selectButton == 1)
+		{
+			// draw "3x3", "4x4" or "5x5" mode with different color.
+			drawText("MODE THREE", -18, -5, 0.7, 0x666699);
+			drawText("MODE FOUR", -18, -15, 0.7, 0x0099ff);
+			drawText("MODE FIVE", -18, -25, 0.7, 0x666699);
 			the_2048.setMode(MODE_4);
 		}
 		else
 		{
-			// draw "5x5" or "4x4" mode with different color.
-			drawText("MODE FOUR", -70, -10, 1, 0xaaaaaa);
-			drawText("MODE FIVE", 10, -10, 1, 0xff0000);
+			// draw "3x3", "4x4" or "5x5" mode with different color.
+			drawText("MODE THREE", -18, -5, 0.7, 0x666699);
+			drawText("MODE FOUR", -18, -15, 0.7, 0x666699);
+			drawText("MODE FIVE", -18, -25, 0.7, 0x0099ff);
 			the_2048.setMode(MODE_5);
 		}
 
-		drawNumber(2048, 47, 20, 7, 0x000000);
+		drawNumber(2048, 45, 20, 7, 0x000000);
 	}
 }

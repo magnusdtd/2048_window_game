@@ -428,8 +428,18 @@ void drawText(const char* text, float x, float y, float size, u32 color) {
 }
 
 
-void drawTable(int mode, float half_size_of_each_cell, float distance_of_each_cell, u32 cell_color, u32 background_color, int** scores, u32 number_color)
+void drawTable(int mode, 
+				float half_size_of_each_cell, 
+				float distance_of_each_cell, 
+				u32* cell_color, 
+				u32 background_color, 
+				const u32 number_of_cell_color, 
+				int** scores, 
+				u32 number_color)
 {
+	if (scores == nullptr)
+		return;
+
 	float x0, y0;
 	// Fomula
 	if (mode % 2 == 1)
@@ -442,7 +452,11 @@ void drawTable(int mode, float half_size_of_each_cell, float distance_of_each_ce
 	// Draw cells
 	for (int i = 0; i < mode; i++) 
 		for (int j = 0; j < mode; j++)
-			drawRect(x0 + j * half_size_of_each_cell * 2.f + distance_of_each_cell * j, y0 - i * half_size_of_each_cell * 2.f - distance_of_each_cell * i, half_size_of_each_cell, half_size_of_each_cell, cell_color);
+			drawRect(x0 + j * half_size_of_each_cell * 2.f + distance_of_each_cell * j, 
+					y0 - i * half_size_of_each_cell * 2.f - distance_of_each_cell * i, 
+					half_size_of_each_cell, 
+					half_size_of_each_cell, 
+				cell_color[(scores[i][j] == 0) ? 0 : ((u32)log2(scores[i][j]) % number_of_cell_color)]);
 
 	// Handle exception
 	if (scores == nullptr)
@@ -451,6 +465,10 @@ void drawTable(int mode, float half_size_of_each_cell, float distance_of_each_ce
 	// Draw number
 	for (int i = 0; i < mode; i++)
 		for (int j = 0; j < mode; j++)
-			drawNumber(scores[i][j], x0 + j * half_size_of_each_cell * 2.f + distance_of_each_cell * j, y0 - i * half_size_of_each_cell * 2.f - distance_of_each_cell * i, 1, number_color);
+			drawNumber(scores[i][j], 
+					x0 + j * half_size_of_each_cell * 2.f + distance_of_each_cell * j, 
+					y0 - i * half_size_of_each_cell * 2.f - distance_of_each_cell * i, 
+					1, 
+					number_color);
 
 }

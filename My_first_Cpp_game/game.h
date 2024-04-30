@@ -6,12 +6,10 @@
 #define isDown(button) input->buttons[button].isDown
 #define isPressed(button) (input->buttons[button].isDown && input->buttons[button].changed)
 #define isReleased(button) (!input->buttons[button].isDown && input->buttons[button].changed)
-#define MODE_4 4
-#define MODE_5 5
 
 /* CLASS Game*/
 class Game {
-	int score;
+	int score = 0;
 	int order_number = 0;
 	int** table = nullptr;
 	int mode = 4; // Default mode
@@ -35,9 +33,7 @@ public:
 	void setPrevTable();
 	bool isPrevTableNull() { return (this->prevTable == nullptr) ? true : false; }
 	int** getTable() { return this->table; }
-
 };
 
-/* FUNCTION */
-void __init__();
+/* FUNCTION */;
 void stimulateGame(Input* input, float deltaTime);
