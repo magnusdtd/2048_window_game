@@ -3,6 +3,7 @@
 #include "variables.h"
 #include "renderer.h"
 #include <fstream>
+#include <sqlite3.h>
 
 enum GameMode {
 	MODE_3 = 3,
