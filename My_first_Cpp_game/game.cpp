@@ -36,6 +36,7 @@ enum GameState {
 GameState currentGameState = GM_MENU;
 bool isSaveScore = false;
 int maxScore = 0;
+bool isSave = false;
 
 void Game::saveScore()
 {
@@ -49,8 +50,24 @@ void Game::saveScore()
 	output << this->order_number++ << ": " << this->score << "\n";
 	output.close();
 }
+int Game::loadScoreAndGetMaxScore()
+{
+	std::fstream input;
+	input.open(DATABASE, std::ios::in);
+	
+	int temp_k = 0, tempScore, max_score = -INT_MAX; std::string tempStr;
+	while (!input.eof()) {
+		input >> tempStr;
+		input >> tempScore;
+		temp_k++;
+		if (tempScore > max_score) max_score = tempScore;
+	}
+	this->order_number = temp_k;
+	return (max_score == -INT_MAX) ? 0 : max_score;
+}
 void Game::init()
 {
+	this->score = 0;
 	this->table = new int* [this->mode];
 	for (int i = 0; i < this->mode; i++)
 		this->table[i] = new int[this->mode];
@@ -71,21 +88,6 @@ void Game::init()
 
 	this->table[Ax][Ay] = 2;
 	this->table[Bx][By] = 2;
-}
-int Game::loadScoreAndGetMaxScore()
-{
-	std::fstream input;
-	input.open(DATABASE, std::ios::in);
-	
-	int temp_k = 0, tempScore, max_score = -INT_MAX; std::string tempStr;
-	while (!input.eof()) {
-		input >> tempStr;
-		input >> tempScore;
-		temp_k++;
-		if (tempScore > max_score) max_score = tempScore;
-	}
-	this->order_number = temp_k;
-	return (max_score == -INT_MAX) ? 0 : max_score;
 }
 Game::~Game() {
 	if (this->table == nullptr || this->prevTable == nullptr)
@@ -360,12 +362,15 @@ void stimulateGameIntro(Input* input) {
 		currentGameState = GM_GAMEPLAY;
 		return;
 	}
+	if (isPressed(BUTTON_BACK))
+		currentGameState = GM_MENU;
+
 	// Draw introduction
 	drawNumber(2048, 10, 30, 2, random(0, 0xffffff));
 	drawText("PRESS ESC TO EXIT", -50, 8, 0.5, 0x9933ff);
 	drawText("USE ARROW TO PLAY GAME", -50, 0, 0.5, 0x9933ff);
 	drawText("PRESS ENTER TO CONTINUE", -50, -8, 0.5, 0x9933ff);
-	drawText("PRESS BACKSPACE TO CONTINUE", -50, -8, 0.5, 0x9933ff);
+	drawText("PRESS BACKSPACE TO PLAY AGAIN", -50, -16, 0.5, 0x9933ff);
 	drawText("ENJOY IT", -20, -35, 1, random(0, 0xffffff));
 
 }
@@ -415,16 +420,22 @@ void stimulateGamePlay(Input* input)
 	drawText("MAX SCORE", -90, 0, 0.8, 0xff3300);
 	drawNumber(maxScore, -70, -10, 1.1, 0xff3300);
 
-	// Check the game is lose or not and save score
+	// Check the game is lose or not. If lose, auto save score
 	if (!the_2048.isTableNull())
 	{
 		if (the_2048.isOver())
 		{
-			drawText("YOU LOSE", -70, -10, 1, 0xcc0099);
+			drawText("YOU LOSE", 50, 10, 0.6, 0xff0000);
+			drawText("SAVED SCORE", 50, 0, 0.6, 0x3366ff);
 			if (!isSaveScore) 
 			{
 				the_2048.saveScore();
 				isSaveScore = !isSaveScore;
+			}
+			if (isPressed(BUTTON_BACK))
+			{
+				currentGameState = GM_MENU;
+				isGetInput = true;
 			}
 			return;
 		}
@@ -436,6 +447,28 @@ void stimulateGamePlay(Input* input)
 		if (!the_2048.isEqual())
 			the_2048.addCell();
 	/*************************************************************************************************************/
+	
+
+	//  Press save score button
+	if (isPressed(BUTTON_SAVE)) 
+	{
+		the_2048.saveScore();
+		isGetInput = false;
+		isSave = true;
+	}
+	if (isSave && !isGetInput)
+	{
+		drawText("SAVED SCORE", 50, 0, 0.6, 0x3366ff);
+	}
+	if (isGetInput)
+		isSave = false;
+
+	// New game
+	if (isPressed(BUTTON_BACK))
+	{
+		currentGameState = GM_MENU;
+		isGetInput = true;
+	}
 }
 void stimulateGame(Input* input, float deltaTime)
 {

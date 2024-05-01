@@ -150,6 +150,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						processButton(BUTTON_RIGHT, VK_RIGHT);
 						processButton(BUTTON_ENTER, VK_RETURN);
 						processButton(BUTTON_ESCAPE, VK_ESCAPE);
+						processButton(BUTTON_BACK, VK_BACK);
+						processButton(BUTTON_SAVE, 0x53); // )x53 is S key
 					}
 				}
 				default: 
