@@ -151,9 +151,6 @@
     <ClInclude Include="variables.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="IDI_ICON1.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Text Include="scores.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

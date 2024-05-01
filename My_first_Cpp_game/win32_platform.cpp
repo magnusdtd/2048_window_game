@@ -99,7 +99,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpszClassName = L"Game Window Class";
 	windowClass.lpfnWndProc = windowCallBack;
-	/*windowClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE("IDI_ICON1"));*/
 
 	// Register class
 	RegisterClass(&windowClass);

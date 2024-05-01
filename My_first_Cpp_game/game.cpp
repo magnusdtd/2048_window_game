@@ -88,7 +88,7 @@ int Game::loadScoreAndGetMaxScore()
 	return (max_score == -INT_MAX) ? 0 : max_score;
 }
 Game::~Game() {
-	if (this->table == nullptr)
+	if (this->table == nullptr || this->prevTable == nullptr)
 		return;
 	for (int i = 0; i < THE_2048_MODE; i++)
 		delete[] this->table[i];
@@ -324,7 +324,7 @@ void stimulateGameMenu(Input* input) {
 	{
 		the_2048.init();
 		maxScore = the_2048.loadScoreAndGetMaxScore();
-		currentGameState = GM_GAMEPLAY;
+		currentGameState = GM_INTRO;
 	}
 
 	if (selectButton == (MODE_3 - NUMBEROFMODE))
@@ -355,15 +355,22 @@ void stimulateGameMenu(Input* input) {
 	drawNumber(2048, 45, 20, 7, 0x000000);
 }
 void stimulateGameIntro(Input* input) {
+	if (isPressed(BUTTON_ENTER))
+	{
+		currentGameState = GM_GAMEPLAY;
+		return;
+	}
+	// Draw introduction
+	drawNumber(2048, 10, 30, 2, random(0, 0xffffff));
+	drawText("PRESS ESC TO EXIT", -50, 8, 0.5, 0x9933ff);
+	drawText("USE ARROW TO PLAY GAME", -50, 0, 0.5, 0x9933ff);
+	drawText("PRESS ENTER TO CONTINUE", -50, -8, 0.5, 0x9933ff);
+	drawText("PRESS BACKSPACE TO CONTINUE", -50, -8, 0.5, 0x9933ff);
+	drawText("ENJOY IT", -20, -35, 1, random(0, 0xffffff));
 
 }
-void stimulateGamePlay(Input* input) {
-	// Draw introduction
-	drawNumber(2048, 85, 30, 2, random(0, 0xffffff));
-	drawText("PRESS ESC TO EXIT", (float)50, (float)10, 0.3, 0x4032E7);
-	drawText("USE ARROW TO PLAY GAME", 50, 0, 0.3, 0x4032E7);
-	drawText("ENJOY IT", 55, -35, 0.7, random(0, 0xffffff));
-
+void stimulateGamePlay(Input* input) 
+{
 	// Set previous array to preTable variable in Game class
 	if (!the_2048.isTableNull())
 		the_2048.setPrevTable();
@@ -405,8 +412,8 @@ void stimulateGamePlay(Input* input) {
 	// Draw current score and maxScore in history
 	drawText("SCORE", -80, 30, 0.8, 0xEB7527);
 	drawNumber(the_2048.getScore(), -70, 20, 1.1, 0x0EC2F4);
-	drawText("MAX SCORE", -90, 0, 0.8, 0xEB7527);
-	drawNumber(maxScore, -70, -10, 1.1, 0x0EC2F4);
+	drawText("MAX SCORE", -90, 0, 0.8, 0xff3300);
+	drawNumber(maxScore, -70, -10, 1.1, 0xff3300);
 
 	// Check the game is lose or not and save score
 	if (!the_2048.isTableNull())
