@@ -36,4 +36,7 @@ public:
 };
 
 /* FUNCTION */;
+void stimulateGameMenu(Input* input);
+void stimulateGameIntro(Input* input);
+void stimulateGamePlay(Input* input);
 void stimulateGame(Input* input, float deltaTime);
