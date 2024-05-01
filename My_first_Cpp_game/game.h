@@ -6,6 +6,8 @@
 #define isDown(button) input->buttons[button].isDown
 #define isPressed(button) (input->buttons[button].isDown && input->buttons[button].changed)
 #define isReleased(button) (!input->buttons[button].isDown && input->buttons[button].changed)
+#define DATABASE "scores.txt"
+
 
 /* CLASS Game*/
 class Game {
@@ -18,6 +20,7 @@ public:
 	void setScore(int score) { this->score = score; }
 	int getScore() { return score; }
 	void saveScore();
+	int loadScoreAndGetMaxScore();
 	void init();
 	~Game();
 	void addCell();

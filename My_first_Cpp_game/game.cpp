@@ -34,19 +34,20 @@ enum GameState {
 	GM_GAMEPLAY,
 };
 GameState currentGameState = GM_MENU;
+bool isSaveScore = false;
+int maxScore = 0;
 
 void Game::saveScore()
 {
 	// Open output file and append the content to the current content of the file.
 	std::fstream output;
-	output.open("scores.txt", std::ios::app);
+	output.open(DATABASE, std::ios::app);
 	if (!output.is_open()) {
 		std::cerr << "Can't open output file\n";
 		return;
 	}
 	output << this->order_number++ << ": " << this->score << "\n";
 	output.close();
-
 }
 void Game::init()
 {
@@ -70,6 +71,21 @@ void Game::init()
 
 	this->table[Ax][Ay] = 2;
 	this->table[Bx][By] = 2;
+}
+int Game::loadScoreAndGetMaxScore()
+{
+	std::fstream input;
+	input.open(DATABASE, std::ios::in);
+	
+	int temp_k = 0, tempScore, max_score = -INT_MAX; std::string tempStr;
+	while (!input.eof()) {
+		input >> tempStr;
+		input >> tempScore;
+		temp_k++;
+		if (tempScore > max_score) max_score = tempScore;
+	}
+	this->order_number = temp_k;
+	return (max_score == -INT_MAX) ? 0 : max_score;
 }
 Game::~Game() {
 	if (this->table == nullptr)
@@ -307,6 +323,7 @@ void stimulateGameMenu(Input* input) {
 	if (isPressed(BUTTON_ENTER))
 	{
 		the_2048.init();
+		maxScore = the_2048.loadScoreAndGetMaxScore();
 		currentGameState = GM_GAMEPLAY;
 	}
 
@@ -385,16 +402,23 @@ void stimulateGamePlay(Input* input) {
 	else
 		drawTable(MODE_3, 12, 2, cellColor, numberOfCellColor, 0x3366ff, the_2048.getTable(), 0xffffff);
 
-	// Draw score
+	// Draw current score and maxScore in history
 	drawText("SCORE", -80, 30, 0.8, 0xEB7527);
 	drawNumber(the_2048.getScore(), -70, 20, 1.1, 0x0EC2F4);
+	drawText("MAX SCORE", -90, 0, 0.8, 0xEB7527);
+	drawNumber(maxScore, -70, -10, 1.1, 0x0EC2F4);
 
-	// Check the game is lose or not
+	// Check the game is lose or not and save score
 	if (!the_2048.isTableNull())
 	{
 		if (the_2048.isOver())
 		{
 			drawText("YOU LOSE", -70, -10, 1, 0xcc0099);
+			if (!isSaveScore) 
+			{
+				the_2048.saveScore();
+				isSaveScore = !isSaveScore;
+			}
 			return;
 		}
 	}
