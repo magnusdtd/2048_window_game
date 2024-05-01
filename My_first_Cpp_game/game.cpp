@@ -13,21 +13,21 @@ GameMode THE_2048_MODE = MODE_3;
 const int NUMBEROFMODE = 3;
 int selectButton = MODE_3 - NUMBEROFMODE;
 const u32 numberOfCellColor = 15;
-u32 cellColor[15] = { 0x666699,
-						0xff9900,
-						0x993333,
-						0xff0000,
-						0xcc0066,
-						0x990099,
-						0xcc00ff,
-						0x6600ff,
-						0x000066,
-						0x0066ff,
-						0x00ccff,
-						0x00cc99,
-						0x33cc33,
-						0x99ffcc,
-						0xccffff };
+u32 cellColor[15] {	0x666699,
+					0xff9900,
+					0x993333,
+					0xff0000,
+					0xcc0066,
+					0x990099,
+					0xcc00ff,
+					0x6600ff,
+					0x000066,
+					0x0066ff,
+					0x00ccff,
+					0x00cc99,
+					0x33cc33,
+					0x99ffcc,
+					0xccffff };
 enum GameState {
 	GM_MENU,
 	GM_INTRO,
@@ -48,7 +48,7 @@ void Game::saveScore()
 	output.close();
 
 }
-void Game::__init__()
+void Game::init()
 {
 	this->table = new int* [this->mode];
 	for (int i = 0; i < this->mode; i++)
@@ -71,8 +71,7 @@ void Game::__init__()
 	this->table[Ax][Ay] = 2;
 	this->table[Bx][By] = 2;
 }
-void Game::freeMemory()
-{
+Game::~Game() {
 	if (this->table == nullptr)
 		return;
 	for (int i = 0; i < THE_2048_MODE; i++)
@@ -296,7 +295,6 @@ void Game::setPrevTable()
 		for (int j = 0; j < this->mode; j++)
 			this->prevTable[i][j] = this->table[i][j];
 }
-
 Game the_2048;
 
 /* FUNCTION */
@@ -304,12 +302,12 @@ void stimulateGame(Input* input, float deltaTime)
 {
 	clearScreen(0xffffff);
 	ShowCursor(true);
+	showCursorPosition();
 
 	if (isPressed(BUTTON_ESCAPE))
 	{
 		VirtualFree(renderState.memory, 0, MEM_RELEASE);
 		renderState.memory = nullptr;
-		the_2048.freeMemory();
 		running = false;
 		return;
 	}
@@ -355,11 +353,11 @@ void stimulateGame(Input* input, float deltaTime)
 		/*Half size should be 8 if MODE_5 is selected.
 		Half size should be 10 if MODE_4 (default) is selected.*/
 		if (the_2048.getMode() == MODE_5)
-			drawTable(MODE_5, 8, 2, cellColor, numberOfCellColor, 0x6683D5, the_2048.getTable(), 0xffffff);
+			drawTable(MODE_5, 8, 2, cellColor, numberOfCellColor, 0x3366ff, the_2048.getTable(), 0xffffff);
 		else if (the_2048.getMode() == MODE_4)
-			drawTable(MODE_4, 10, 2, cellColor, numberOfCellColor, 0x6683D5, the_2048.getTable(), 0xffffff);
+			drawTable(MODE_4, 10, 2, cellColor, numberOfCellColor, 0x3366ff, the_2048.getTable(), 0xffffff);
 		else
-			drawTable(MODE_3, 12, 2, cellColor, numberOfCellColor, 0x6683D5, the_2048.getTable(), 0xffffff);
+			drawTable(MODE_3, 12, 2, cellColor, numberOfCellColor, 0x3366ff, the_2048.getTable(), 0xffffff);
 
 		// Draw score
 		drawText("SCORE", -80, 30, 0.8, 0xEB7527);
@@ -384,7 +382,7 @@ void stimulateGame(Input* input, float deltaTime)
 	} 
 	/* MAIN MENU*/
 	// Need a introductory menu
-	else
+	if (currentGameState == GM_MENU)
 	{
 		if (isPressed(BUTTON_UP))
 			(selectButton += (NUMBEROFMODE - 1)) %= NUMBEROFMODE;
@@ -393,7 +391,7 @@ void stimulateGame(Input* input, float deltaTime)
 
 		if (isPressed(BUTTON_ENTER))
 		{
-			the_2048.__init__();
+			the_2048.init();
 			currentGameState = GM_GAMEPLAY;
 		}
 

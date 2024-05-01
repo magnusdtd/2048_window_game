@@ -43,7 +43,6 @@ LRESULT CALLBACK windowCallBack(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		{	
 			VirtualFree(renderState.memory, 0, MEM_RELEASE);
 			renderState.memory = nullptr;
-			the_2048.freeMemory();
 			running = false;
 		} break;
 

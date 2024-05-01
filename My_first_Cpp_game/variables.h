@@ -11,7 +11,6 @@ extern bool running;
 extern RenderState renderState;
 extern Input input;
 extern float renderScale;
-extern Game the_2048;
 
 #endif
 //=====================//

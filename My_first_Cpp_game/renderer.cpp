@@ -52,10 +52,10 @@ void drawRect(float x, float y, float halfSizeX, float halfSizeY, u32 color)
 	
 	
 	//Change to pixels
-	int x0 = (int) x - halfSizeX;
-	int x1 = (int) x + halfSizeX;
-	int y0 = (int) y - halfSizeY;
-	int y1 = (int) y + halfSizeY;
+	int x0 = (int) x - (int) halfSizeX;
+	int x1 = (int) x + (int) halfSizeX;
+	int y0 = (int) y - (int) halfSizeY;
+	int y1 = (int) y + (int) halfSizeY;
 
 	drawRectinPixels(x0, y0, x1, y1, color);
 }
@@ -478,10 +478,20 @@ void drawTable(int mode,
 	// Draw number
 	for (int i = 0; i < mode; i++)
 		for (int j = 0; j < mode; j++)
-			drawNumber(scores[i][j], 
-					x0 + j * half_size_of_each_cell * 2.f + distance_of_each_cell * j, 
-					y0 - i * half_size_of_each_cell * 2.f - distance_of_each_cell * i, 
-					1, 
-					number_color);
+			if (scores[i][j] != 0)
+				drawNumber(scores[i][j], 
+							x0 + j * half_size_of_each_cell * 2.f + distance_of_each_cell * j, 
+							y0 - i * half_size_of_each_cell * 2.f - distance_of_each_cell * i, 
+							1, 
+							number_color);
 
+}
+
+void showCursorPosition() {
+	POINT point;
+	if (!GetCursorPos(&point))
+	{
+		drawNumber(point.x, point.x - 5, point.y - 5, 1, 0x3333ff);
+		drawNumber(point.y, point.x - 3, point.y - 5, 1, 0x3333ff);
+	}
 }

@@ -18,8 +18,8 @@ public:
 	void setScore(int score) { this->score = score; }
 	int getScore() { return score; }
 	void saveScore();
-	void __init__();
-	void freeMemory();
+	void init();
+	~Game();
 	void addCell();
 	void upMove();
 	void downMove();
