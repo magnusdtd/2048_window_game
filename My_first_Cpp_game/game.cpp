@@ -328,6 +328,12 @@ void Game::newGame() {
 		this->prevTable = nullptr;
 	}
 }
+void Game::redo() {
+
+}
+void Game::undo() {
+
+}
 Game the_2048;
 
 /* FUNCTION */
@@ -474,9 +480,7 @@ void stimulateGamePlay(Input* input)
 		isSave = true;
 	}
 	if (isSave && !isGetInput)
-	{
 		drawText("SAVED SCORE", 50, 0, 0.6, 0x3366ff);
-	}
 	if (isGetInput)
 		isSave = false;
 

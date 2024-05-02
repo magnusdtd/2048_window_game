@@ -21,6 +21,7 @@ public:
     bool push(T x);
     T pop();
     bool isEmpty() { return (top < 0); }
+    T getTop() { return top; }
 };
 
 int clamp(int min, int val, int max);

@@ -40,6 +40,8 @@ public:
 	bool isPrevTableNull() { return (this->prevTable == nullptr) ? true : false; }
 	u64** getTable() { return this->table; }
 	void newGame();
+	void redo();
+	void undo();
 };
 
 /* FUNCTION */;
