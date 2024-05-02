@@ -1,9 +1,5 @@
 /* LIBRARY */
 #include "game.h"
-#include "variables.h"
-#include "renderer.h"
-#include <fstream>
-#include <sqlite3.h>
 
 enum GameMode {
 	MODE_3 = 3,
@@ -69,9 +65,9 @@ int Game::loadScoreAndGetMaxScore()
 void Game::init()
 {
 	this->score = 0;
-	this->table = new int* [this->mode];
+	this->table = new u64* [this->mode];
 	for (int i = 0; i < this->mode; i++)
-		this->table[i] = new int[this->mode];
+		this->table[i] = new u64[this->mode];
 
 	for (int i = 0; i < this->mode; i++)
 		for (int j = 0; j < this->mode; j++)
@@ -91,18 +87,20 @@ void Game::init()
 	this->table[Bx][By] = 2;
 }
 Game::~Game() {
-	if (this->table == nullptr || this->prevTable == nullptr)
-		return;
-	for (int i = 0; i < THE_2048_MODE; i++)
-		delete[] this->table[i];
-	delete[] this->table;
-
-	for (int i = 0; i < this->mode; i++)
-		delete[] this->prevTable[i];
-	delete[] this->prevTable;
-
-	this->table = nullptr;
-	this->prevTable = nullptr;
+	if (this->table != nullptr)
+	{
+		for (int i = 0; i < THE_2048_MODE; i++)
+			delete[] this->table[i];
+		delete[] this->table;
+		this->table = nullptr;
+	}
+	if (this->prevTable != nullptr)
+	{
+		for (int i = 0; i < this->mode; i++)
+			delete[] this->prevTable[i];
+		delete[] this->prevTable;
+		this->prevTable = nullptr;
+	}
 }
 void Game::addCell()
 {
@@ -306,13 +304,29 @@ bool Game::isOver()
 }
 void Game::setPrevTable()
 {
-	this->prevTable = new int* [this->mode];
+	this->prevTable = new u64* [this->mode];
 	for (int i = 0; i < this->mode; i++)
-		this->prevTable[i] = new int[this->mode];
+		this->prevTable[i] = new u64[this->mode];
 
 	for (int i = 0; i < this->mode; i++)
 		for (int j = 0; j < this->mode; j++)
 			this->prevTable[i][j] = this->table[i][j];
+}
+void Game::newGame() {
+	if (this->table != nullptr)
+	{
+		for (int i = 0; i < THE_2048_MODE; i++)
+			delete[] this->table[i];
+		delete[] this->table;
+		this->table = nullptr;
+	}
+	if (this->prevTable != nullptr)
+	{
+		for (int i = 0; i < this->mode; i++)
+			delete[] this->prevTable[i];
+		delete[] this->prevTable;
+		this->prevTable = nullptr;
+	}
 }
 Game the_2048;
 
@@ -431,6 +445,7 @@ void stimulateGamePlay(Input* input)
 			if (!isSaveScore) 
 			{
 				the_2048.saveScore();
+				maxScore = the_2048.getScore() > maxScore ? the_2048.getScore() : maxScore;
 				isSaveScore = !isSaveScore;
 			}
 			if (isPressed(BUTTON_BACK))
@@ -454,6 +469,7 @@ void stimulateGamePlay(Input* input)
 	if (isPressed(BUTTON_SAVE)) 
 	{
 		the_2048.saveScore();
+		maxScore = the_2048.getScore() > maxScore ? the_2048.getScore() : maxScore;
 		isGetInput = false;
 		isSave = true;
 	}
@@ -468,6 +484,7 @@ void stimulateGamePlay(Input* input)
 	if (isPressed(BUTTON_BACK))
 	{
 		currentGameState = GM_MENU;
+		the_2048.newGame();
 		isGetInput = true;
 	}
 }

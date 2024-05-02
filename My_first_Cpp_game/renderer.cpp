@@ -434,7 +434,7 @@ void drawTable(int mode,
 				u32* cell_color, 
 				u32 background_color, 
 				const u32 number_of_cell_color, 
-				int** scores, 
+				u64** scores, 
 				u32 number_color)
 {
 	// Handle exception

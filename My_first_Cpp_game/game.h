@@ -1,6 +1,10 @@
 #pragma once
 /* LIBRARY */
 #include "platformCommon.h"
+#include "variables.h"
+#include "renderer.h"
+#include <fstream>
+#include <sqlite3.h>
 
 /* MACROS */
 #define isDown(button) input->buttons[button].isDown
@@ -8,14 +12,13 @@
 #define isReleased(button) (!input->buttons[button].isDown && input->buttons[button].changed)
 #define DATABASE "scores.txt"
 
-
 /* CLASS Game*/
 class Game {
 	int score = 0;
 	int order_number = 0;
-	int** table = nullptr;
+	u64** table = nullptr;
 	int mode = 4; // Default mode
-	int** prevTable = nullptr;
+	u64** prevTable = nullptr;
 public:
 	void setScore(int score) { this->score = score; }
 	int getScore() { return score; }
@@ -26,8 +29,8 @@ public:
 	void addCell();
 	void upMove();
 	void downMove();
-	void leftMove();
-	void rightMove();
+	void leftMove(); // It have bug must change later
+	void rightMove(); // It have bug must change later
 	bool isEqual();
 	bool isOver();
 	void setMode(int mode) { this->mode = mode; }
@@ -35,7 +38,8 @@ public:
 	bool isTableNull() { return (this->table == nullptr) ? true : false; }
 	void setPrevTable();
 	bool isPrevTableNull() { return (this->prevTable == nullptr) ? true : false; }
-	int** getTable() { return this->table; }
+	u64** getTable() { return this->table; }
+	void newGame();
 };
 
 /* FUNCTION */;
