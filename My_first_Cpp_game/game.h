@@ -19,6 +19,7 @@ class Game {
 	u64** table = nullptr;
 	int mode = 4; // Default mode
 	u64** prevTable = nullptr;
+	Stack<u64*> gameStack;
 public:
 	void setScore(int score) { this->score = score; }
 	int getScore() { return score; }
